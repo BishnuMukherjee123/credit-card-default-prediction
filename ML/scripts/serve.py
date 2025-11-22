@@ -29,8 +29,12 @@ app = FastAPI(title="Credit Fraud API")
 # -------------------------------
 # CORS CONFIGURATION
 # -------------------------------
+# Allow requests from frontend and backend
 ALLOWED_ORIGINS = [
-    "https://credit-card-default-prediction-cqml.vercel.app"
+    "https://credit-card-default-prediction-cqml.vercel.app",  # Frontend
+    "https://*.onrender.com",  # Render backend (update with actual URL)
+    "http://localhost:3000",  # Local frontend
+    "http://localhost:5000",  # Local backend
 ]
 
 app.add_middleware(
@@ -40,6 +44,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Health check endpoint for Render
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "service": "Credit Fraud ML API"}
+
+@app.get("/")
+def root():
+    return {
+        "message": "Credit Fraud Detection ML API",
+        "endpoints": {
+            "health": "/health",
+            "predict": "/predict (POST)"
+        }
+    }
 
 class InputModel(BaseModel):
     features: list

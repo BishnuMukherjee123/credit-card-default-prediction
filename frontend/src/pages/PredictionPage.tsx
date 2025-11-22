@@ -162,7 +162,7 @@ interface MLPredictionResult {
 // -----------------------------
 // PredictionPage component
 // -----------------------------
-export default function PredictionPage(): JSX.Element {
+export default function PredictionPage(): React.JSX.Element {
   const { predict, savePrediction, isLoading } = usePrediction();
 
   // store features as strings to keep Input controlled

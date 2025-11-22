@@ -196,7 +196,7 @@ export default function HistoryPage() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const data = await getHistory();
+        const data: any = await getHistory();
         const historyData = Array.isArray(data)
           ? data
           : Array.isArray(data?.data)

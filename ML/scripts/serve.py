@@ -24,19 +24,20 @@ FEATURE_COLUMNS = [
     "V20","V21","V22","V23","V24","V25","V26","V27","V28","Amount"
 ]
 
-# Read allowed origin from .env
-ALLOWED_ORIGIN = os.getenv("ALLOWED_ORIGIN", "*")
-
 app = FastAPI(title="Credit Fraud API")
 
 # -------------------------------
-# CORS USING ENVIRONMENT VARIABLE
+# CORS CONFIGURATION
 # -------------------------------
+ALLOWED_ORIGINS = [
+    "https://credit-card-default-prediction-cqml.vercel.app"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[ALLOWED_ORIGIN],  # Read from .env
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["POST"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 

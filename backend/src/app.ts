@@ -35,11 +35,12 @@ app.use(
 /* ---------------------------------------
    WEBHOOKS MUST COME BEFORE JSON PARSER
 ---------------------------------------- */
-app.post(
-  "/api/webhooks/clerk",
-  express.raw({ type: "*/*" }),
-  webhookRouter
-);
+/* ---------------------------------------
+   WEBHOOKS MUST COME BEFORE JSON PARSER
+---------------------------------------- */
+// Mount the webhook router. 
+// Note: The router itself handles the specific path "/clerk" and applies express.raw()
+app.use("/api/webhooks", webhookRouter);
 
 /* ---------------------------------------
    JSON Parser BELOW Webhooks

@@ -19,7 +19,7 @@ import type { JSX } from "react";
 // ✅ BEAUTIFUL LOADING COMPONENT
 const LoadingScreen = () => (
   <div 
-    className="min-h-screen flex items-center justify-center relative overflow-hidden" 
+    className="flex-1 flex items-center justify-center relative overflow-hidden min-h-[50vh]" 
     style={{ background: '#000000' }}>
     
     {/* Animated Background Orbs */}
@@ -150,48 +150,50 @@ function AppRoutes(): JSX.Element {
   const isLoginPage = location.pathname === '/login';
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* ✅ CONDITIONALLY RENDER NAVBAR */}
       {!isLoginPage && <Navbar />}
       
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          
-          <Route path="/" element={<RootRedirect />} />
-          
-          <Route path="/login" element={
-            <AuthRoute>
-              <LoginPage />
-            </AuthRoute>
-          } />
-          
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/predict" element={
-            <ProtectedRoute>
-              <PredictionPage />
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/history" element={
-            <ProtectedRoute>
-              <HistoryPage />
-            </ProtectedRoute>
-          } />
+      <main className="flex-1 w-full flex flex-col bg-[#0a0a0d]">
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            
+            <Route path="/" element={<RootRedirect />} />
+            
+            <Route path="/login" element={
+              <AuthRoute>
+                <LoginPage />
+              </AuthRoute>
+            } />
+            
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/predict" element={
+              <ProtectedRoute>
+                <PredictionPage />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/history" element={
+              <ProtectedRoute>
+                <HistoryPage />
+              </ProtectedRoute>
+            } />
 
-          <Route path="/analytics" element={
-            <ProtectedRoute>
-              <AnalyticsPage />
-            </ProtectedRoute>
-          } />
+            <Route path="/analytics" element={
+              <ProtectedRoute>
+                <AnalyticsPage />
+              </ProtectedRoute>
+            } />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </AnimatePresence>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AnimatePresence>
+      </main>
 
       {/* ✅ CONDITIONALLY RENDER FOOTER */}
       {!isLoginPage && <Footer />}

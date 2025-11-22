@@ -34,17 +34,22 @@
 ======================================== */
 
 
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', system-ui, sans-serif;
-  background: linear-gradient(to bottom, hsl(240, 10%, 3.9%), hsl(240, 10%, 5%));
-  background-attachment: fixed; /* ✅ FIX WHITE FLASH */
+  background: #0a0a0d; /* ✅ Match page background */
+  color: white;
   line-height: 1.6;
   overflow-x: hidden;
 }

@@ -44,7 +44,7 @@ export const Footer = (): JSX.Element => {
   ];
 
   return (
-    <footer className="relative mt-20 overflow-hidden" style={{ background: '#121212' }}>
+    <footer className="relative overflow-hidden" style={{ background: '#121212' }}>
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute inset-0" style={{

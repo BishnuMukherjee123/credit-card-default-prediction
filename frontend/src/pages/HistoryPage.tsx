@@ -272,7 +272,7 @@ export default function HistoryPage() {
 
   return (
     <motion.div
-      className="min-h-screen pt-28 pb-12 px-4 relative overflow-hidden"
+      className="flex-1 pt-28 pb-6 px-4 relative overflow-hidden"
       style={{ background: "#0a0a0d" }}
       variants={pageVariants}
       initial="initial"

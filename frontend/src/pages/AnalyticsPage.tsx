@@ -161,7 +161,7 @@ export default function AnalyticsPage() {
 
           {/* Pie Chart */}
           <motion.div variants={cardVariants} initial="initial" animate="animate" transition={{ delay: 0.5 }}>
-            <RiskPieChart pieData={pieData} total={data?.totalPredictions} />
+            <RiskPieChart pieData={pieData} total={data?.totalPredictions ?? 0} />
           </motion.div>
 
         </div>
@@ -257,7 +257,7 @@ const MonthlyBarChart = ({ monthlyStats, year }: { monthlyStats: any[], year: nu
   </Card>
 );
 
-const RiskPieChart = ({ pieData, total }) => (
+const RiskPieChart = ({ pieData, total }: { pieData: Array<{ name: string; value: number; color: string }>; total: number }) => (
   <Card className="h-full relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(15, 15, 18, 0.95), rgba(15, 15, 18, 0.85))', border: '1px solid rgba(139, 92, 246, 0.3)', backdropFilter: 'blur(16px)' }}>
     <CardHeader>
       <CardTitle className="text-white text-xl flex items-center gap-2"><PieChartIcon className="h-5 w-5 text-violet-400" />Risk Distribution</CardTitle>
@@ -265,7 +265,7 @@ const RiskPieChart = ({ pieData, total }) => (
     <CardContent className="flex items-center justify-between p-8">
 
       <div className="flex flex-col gap-6">
-        {pieData.map((entry) => (
+        {pieData.map((entry: { name: string; value: number; color: string }) => (
           <div key={entry.name} className="flex items-center gap-4 group">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center transition-transform group:hover:scale-110" style={{ background: `${entry.color}15`, border: `1px solid ${entry.color}30` }}>
               <div className="w-4 h-4 rounded-full shadow-[0_0_10px_currentColor]" style={{ background: entry.color }} />
@@ -282,7 +282,7 @@ const RiskPieChart = ({ pieData, total }) => (
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie data={pieData} cx="50%" cy="50%" innerRadius={70} outerRadius={90} paddingAngle={5} dataKey="value" stroke="none" startAngle={90} endAngle={-270}>
-              {pieData.map((entry, index) => (<Cell key={index} fill={entry.color} style={{ filter: `drop-shadow(0 0 8px ${entry.color}60)` }} />))}
+              {pieData.map((entry: { name: string; value: number; color: string }, index: number) => (<Cell key={index} fill={entry.color} style={{ filter: `drop-shadow(0 0 8px ${entry.color}60)` }} />))}
             </Pie>
             <Tooltip contentStyle={{ backgroundColor: 'rgba(20, 20, 25, 0.95)', border: '1px solid rgba(139, 92, 246, 0.3)', borderRadius: '12px', color: '#fff', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }} itemStyle={{ color: '#fff', fontWeight: 600 }} cursor={false} />
           </PieChart>

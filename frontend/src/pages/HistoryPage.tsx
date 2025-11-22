@@ -19,21 +19,21 @@ import {
 // ---------- CONSTANT MEMOIZED ANIMATIONS ----------
 const pageVariants = {
   initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.4, ease: "easeOut" } }
-};
+  animate: { opacity: 1, transition: { duration: 0.4, ease: "easeOut" as const } }
+} as const;
 
 const headerVariants = {
   initial: { opacity: 0, y: -15 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.4, delay: 0.1, ease: "easeOut" } }
-};
+  animate: { opacity: 1, y: 0, transition: { duration: 0.4, delay: 0.1, ease: "easeOut" as const } }
+} as const;
 
 const cardVariants = {
   initial: { opacity: 0, y: 15 },
   animate: { opacity: 1, y: 0 }
-};
+} as const;
 
 // ---------- MEMOIZED RISK UTILS ----------
-const riskIconMap: Record<string, JSX.Element> = {
+const riskIconMap: Record<string, React.JSX.Element> = {
   low: <CheckCircle className="h-6 w-6" style={{ color: "#4ade80" }} />,
   medium: <AlertTriangle className="h-6 w-6" style={{ color: "#fbbf24" }} />,
   high: <AlertCircle className="h-6 w-6" style={{ color: "#f87171" }} />

@@ -10,12 +10,6 @@ interface RiskMeterProps {
 
 export const RiskMeter = ({ probability, riskLevel, className }: RiskMeterProps) => {
   const percentage = Math.round(probability * 100);
-  
-  const getRiskColor = () => {
-    if (riskLevel === 'low') return 'from-green-500 to-emerald-500';
-    if (riskLevel === 'medium') return 'from-yellow-500 to-orange-500';
-    return 'from-red-500 to-rose-500';
-  };
 
   return (
     <div className={cn("flex flex-col items-center gap-6", className)}>

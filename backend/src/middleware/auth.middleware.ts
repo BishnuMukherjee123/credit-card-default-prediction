@@ -74,9 +74,9 @@ export const authMiddleware = async (
     // Attach user to request
     req.user = {
       id: clerkId,
-      email: user.email ?? undefined,
-      firstName: user.firstName ?? undefined,
-      lastName: user.lastName ?? undefined,
+      ...(user.email && { email: user.email }),
+      ...(user.firstName && { firstName: user.firstName }),
+      ...(user.lastName && { lastName: user.lastName }),
     };
 
     return next();

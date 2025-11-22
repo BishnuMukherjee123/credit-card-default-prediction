@@ -6,8 +6,10 @@ declare global {
     interface Request {
       user?: {
         id: string;
-        clerkId: string;
+        clerkId?: string;
         email?: string;
+        firstName?: string;
+        lastName?: string;
       };
     }
   }

@@ -1,7 +1,8 @@
 import helmet from "helmet";
 import cors from "cors";
 import mongoSanitize from "express-mongo-sanitize";
-import xssClean from "xss-clean";
+// @ts-ignore - xss-clean doesn't have proper TypeScript types
+const xssClean = require("xss-clean");
 import type { RequestHandler } from "express";
 
 export const securityMiddleware: RequestHandler[] = [

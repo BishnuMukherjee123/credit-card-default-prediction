@@ -1,0 +1,264 @@
+/* ========================================
+   UI COMPONENTS - ENHANCED STYLING
+======================================== */
+
+/* Button Enhancements */
+.btn-gradient {
+  position: relative;
+  background: linear-gradient(135deg, rgb(139, 92, 246), rgb(59, 130, 246));
+  border: none;
+  color: white;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+}
+
+.btn-gradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 32px rgba(139, 92, 246, 0.5),
+    0 4px 16px rgba(59, 130, 246, 0.3);
+}
+
+.btn-gradient:hover::before {
+  left: 100%;
+}
+
+.btn-gradient:active {
+  transform: translateY(0);
+}
+
+/* Card Improvements */
+.glass-card {
+  backdrop-filter: blur(16px) saturate(150%);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 18, 0.7),
+    rgba(15, 15, 18, 0.5)
+  );
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 
+    0 16px 48px rgba(139, 92, 246, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Progress Bar */
+.progress-bar {
+  position: relative;
+  overflow: hidden;
+  background: rgba(39, 39, 42, 0.5);
+  border-radius: 9999px;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, rgb(139, 92, 246), rgb(59, 130, 246));
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  border-radius: 9999px;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: progress-shimmer 2s infinite;
+}
+
+@keyframes progress-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Input Focus Ring */
+.input-enhanced {
+  background: rgba(39, 39, 42, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: hsl(0, 0%, 98%);
+}
+
+.input-enhanced:focus {
+  background: rgba(39, 39, 42, 0.8);
+  border-color: rgb(139, 92, 246);
+  box-shadow: 
+    0 0 0 3px rgba(139, 92, 246, 0.2),
+    0 4px 12px rgba(139, 92, 246, 0.3);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.input-enhanced::placeholder {
+  color: rgba(250, 250, 250, 0.4);
+}
+
+/* Label Enhancement */
+.label-enhanced {
+  color: hsl(0, 0%, 98%);
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+/* Tab Enhancement */
+.tab-button {
+  position: relative;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+}
+
+.tab-button:hover {
+  color: rgb(250, 250, 250);
+}
+
+.tab-indicator {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgb(139, 92, 246), rgb(59, 130, 246));
+  border-radius: 9999px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+}
+
+/* Form Field Group */
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: hsl(0, 0%, 98%);
+  font-weight: 500;
+}
+
+/* Button Variants */
+.btn-outline {
+  background: transparent;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: rgb(250, 250, 250);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-outline:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgb(139, 92, 246);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: rgb(250, 250, 250);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-ghost:hover {
+  background: rgba(139, 92, 246, 0.1);
+  color: rgb(139, 92, 246);
+}
+
+/* Card Variants */
+.card-elevated {
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-bordered {
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* Sonner Toast Customization */
+.toast-custom {
+  backdrop-filter: blur(16px);
+  background: rgba(15, 15, 18, 0.95) !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2) !important;
+}
+
+/* Focus Visible */
+*:focus-visible {
+  outline: 2px solid rgb(139, 92, 246);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Disabled State */
+.disabled,
+[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Loading Spinner */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

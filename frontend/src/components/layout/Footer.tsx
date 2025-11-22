@@ -130,9 +130,9 @@ export const Footer = (): JSX.Element => {
             {/* Social Links */}
             <div className="flex gap-3">
               {[
-                { Icon: Github, href: 'https://github.com', label: 'GitHub' },
-                { Icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-                { Icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
+                { Icon: Github, href: 'https://github.com/BishnuMukherjee123', label: 'GitHub' },
+                { Icon: Linkedin, href: 'https://linkedin.com/in/bishnu-mukherjee-a235a621a', label: 'LinkedIn' },
+                { Icon: Twitter, href: 'https://x.com/BishnuMukherj11', label: 'Twitter' },
               ].map(({ Icon, href, label }) => (
                 <motion.a
                   key={label}

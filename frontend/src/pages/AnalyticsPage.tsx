@@ -85,7 +85,7 @@ export default function AnalyticsPage() {
 
   if (loading && !data) {
     return (
-      <div className="min-h-screen pt-24 flex justify-center items-center bg-[#0a0a0d] text-white">
+      <div className="min-h-screen pt-24 pb-24 flex justify-center items-center bg-[#0a0a0d] text-white">
         <Loader2 className="h-10 w-10 animate-spin text-violet-500" />
       </div>
     );

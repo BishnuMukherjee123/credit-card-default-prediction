@@ -93,8 +93,9 @@ const sharedStyles = {
   cardBg: {
     background: "linear-gradient(135deg, rgba(15, 15, 18, 0.97), rgba(15, 15, 18, 0.92))",
     border: "1px solid rgba(139, 92, 246, 0.4)",
-    backdropFilter: "blur(24px)",
+    backdropFilter: "blur(12px)", // Reduced from 24px for performance
     boxShadow: "0 16px 48px rgba(0, 0, 0, 0.7), 0 0 80px rgba(139, 92, 246, 0.15)",
+    transform: "translateZ(0)", // Force GPU layer
   } as React.CSSProperties,
 };
 
@@ -264,14 +265,14 @@ export default function PredictionPage(): React.JSX.Element {
 
   return (
     <motion.div
-      className="flex-1 pt-28 pb-6 px-4 relative overflow-hidden"
+      className="flex-1 pt-28 pb-28 px-4 relative overflow-hidden"
       style={{ background: "#0a0a0d" }}
       variants={PAGE_VARIANTS}
       initial="initial"
       animate="animate"
     >
-      {/* Background visuals */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Background visuals - Optimized with fixed position and will-change */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div
           className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-20"
           style={{
@@ -279,6 +280,7 @@ export default function PredictionPage(): React.JSX.Element {
             top: "-20%",
             left: "-15%",
             willChange: "transform",
+            transform: "translateZ(0)",
           }}
           animate={prefersReducedMotion ? undefined : { x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
@@ -291,6 +293,7 @@ export default function PredictionPage(): React.JSX.Element {
             top: "20%",
             right: "-15%",
             willChange: "transform",
+            transform: "translateZ(0)",
           }}
           animate={prefersReducedMotion ? undefined : { x: [0, -40, 0], y: [0, 50, 0], scale: [1, 1.15, 1] }}
           transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
@@ -304,6 +307,7 @@ export default function PredictionPage(): React.JSX.Element {
             left: "35%",
             filter: "blur(80px)",
             willChange: "transform",
+            transform: "translateZ(0)",
           }}
           animate={prefersReducedMotion ? undefined : { x: [0, -30, 0], y: [0, -35, 0], scale: [1, 1.1, 1] }}
           transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
@@ -318,6 +322,7 @@ export default function PredictionPage(): React.JSX.Element {
               left: p.left,
               top: p.top,
               willChange: "transform, opacity",
+              transform: "translateZ(0)",
             }}
             animate={{
               y: [0, -120, 0],
@@ -334,6 +339,7 @@ export default function PredictionPage(): React.JSX.Element {
             backgroundImage:
               "linear-gradient(rgba(139, 92, 246, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.15) 1px, transparent 1px)",
             backgroundSize: "80px 80px",
+            willChange: "transform",
           }}
         />
 

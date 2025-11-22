@@ -1,8 +1,12 @@
-// @ts-nocheck
 import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { toast } from "sonner";
 import { usePrediction } from "@/hooks/usePrediction";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import type { JSX } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Sparkles,
   TrendingDown,
@@ -18,145 +22,22 @@ import {
 } from "lucide-react";
 
 // -----------------------------
-// INLINE UI COMPONENTS (Replacements for @/components/ui/...)
-// -----------------------------
-
-const Button = React.forwardRef(({ className, variant = "default", size = "default", ...props }, ref) => {
-  const baseStyles = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
-  const variants = {
-    default: "bg-primary text-primary-foreground hover:bg-primary/90",
-    destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-    outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-    ghost: "hover:bg-accent hover:text-accent-foreground",
-    link: "text-primary underline-offset-4 hover:underline",
-  };
-  const sizes = {
-    default: "h-10 px-4 py-2",
-    sm: "h-9 rounded-md px-3",
-    lg: "h-11 rounded-md px-8",
-    icon: "h-10 w-10",
-  };
-  return (
-    <button
-      ref={ref}
-      className={`${baseStyles} ${variants[variant] || variants.default} ${sizes[size] || sizes.default} ${className}`}
-      {...props}
-    />
-  );
-});
-Button.displayName = "Button";
-//----------------
-const Input = React.forwardRef(({ className, type, ...props }, ref) => {
-  return (
-    <input
-      type={type}
-      className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
-      ref={ref}
-      {...props}
-    />
-  );
-});
-Input.displayName = "Input";
-
-const Label = React.forwardRef(({ className, ...props }, ref) => (
-  <label
-    ref={ref}
-    className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${className}`}
-    {...props}
-  />
-));
-Label.displayName = "Label";
-
-const Card = React.forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props} />
-));
-Card.displayName = "Card";
-
-const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={`flex flex-col space-y-1.5 p-6 ${className}`} {...props} />
-));
-CardHeader.displayName = "CardHeader";
-
-const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
-  <h3 ref={ref} className={`text-2xl font-semibold leading-none tracking-tight ${className}`} {...props} />
-));
-CardTitle.displayName = "CardTitle";
-
-const CardContent = React.forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
-));
-CardContent.displayName = "CardContent";
-
-// -----------------------------
-// Hooks: usePrediction (Inlined)
-// -----------------------------
-const usePrediction = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const predict = useCallback(async (features) => {
-    setIsLoading(true);
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    // Simple heuristic logic to simulate AI prediction
-    // Using features V4 (index 3) and V14 (index 13) which are often significant
-    const v4 = features[3] || 0;
-    const v14 = features[13] || 0;
-    
-    let score = 0;
-    // Heuristic: V14 < -2 and V4 > 1 often indicates fraud in standard datasets
-    if (v14 < -2) score += 0.4;
-    if (v4 > 1.5) score += 0.3;
-    
-    // Add randomness for demo feel
-    const randomNoise = Math.random() * 0.3;
-    const probability = Math.min(0.99, Math.max(0.01, score + randomNoise));
-    const prediction = probability > 0.5 ? 1 : 0;
-
-    setIsLoading(false);
-    return { prediction, probability };
-  }, []);
-
-  const savePrediction = useCallback(async (data) => {
-    // Mock save logic
-    console.log("Prediction saved:", data);
-  }, []);
-
-  return { predict, savePrediction, isLoading };
-};
-
-// -----------------------------
-// Hooks: Mobile Detection
-// -----------------------------
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-  return isMobile;
-};
-
-// -----------------------------
-// Static constants
+// Static constants & sample data
 // -----------------------------
 const PAGE_VARIANTS = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
-};
+} as const;
 
 const HEADER_VARIANTS = {
   initial: { opacity: 0, y: -20 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.1, ease: "easeOut" } },
-};
+} as const;
 
 const CARD_VARIANTS = {
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-};
+} as const;
 
 const PCA_LABELS = [
   { label: "Pattern A", tooltip: "AI Feature 1 (V1)" },
@@ -199,53 +80,68 @@ const ICON_PILLS = [
   { icon: <Shield />, text: "94% Accuracy", color: "#4ade80" },
   { icon: <Zap />, text: "<200ms Speed", color: "#60a5fa" },
   { icon: <Brain />, text: "AI-Powered", color: "#a78bfa" },
-];
+] as const;
 
 // -----------------------------
-// Styles Helper (Dynamic based on device)
+// Mobile detection hook
 // -----------------------------
-const getStyles = (isMobile) => ({
+const useIsMobile = (): boolean => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+  return isMobile;
+};
+
+// -----------------------------
+// Styles helper (device aware)
+// -----------------------------
+const getStyles = (isMobile: boolean) => ({
   input: {
     background: "rgba(25, 25, 30, 0.9)",
     border: "1px solid rgba(139, 92, 246, 0.35)",
     color: "#ffffff",
-    // 16px font size on mobile prevents iOS zoom-on-focus
-    fontSize: isMobile ? "16px" : "14px", 
+    fontSize: isMobile ? "16px" : "14px",
     fontWeight: 500,
-  },
+  } as React.CSSProperties,
   cardBg: {
-    // Solid background on mobile for performance (no blur calculation)
-    // Glassmorphism on desktop
-    background: isMobile 
-      ? "#0F0F12" 
+    background: isMobile
+      ? "#0F0F12"
       : "linear-gradient(135deg, rgba(15, 15, 18, 0.97), rgba(15, 15, 18, 0.92))",
     border: "1px solid rgba(139, 92, 246, 0.4)",
-    backdropFilter: isMobile ? "none" : "blur(12px)", 
+    backdropFilter: isMobile ? "none" : "blur(12px)",
     boxShadow: "0 16px 48px rgba(0, 0, 0, 0.7), 0 0 80px rgba(139, 92, 246, 0.15)",
     transform: "translateZ(0)",
-  },
+  } as React.CSSProperties,
 });
 
 // -----------------------------
-// Helper: feature label
+// Feature label helper
 // -----------------------------
-const getFeatureLabel = (index) => {
+const getFeatureLabel = (index: number) => {
   if (index === 0) return { label: "Time", tooltip: "Seconds since first transaction" };
   if (index === 29) return { label: "Amount", tooltip: "Transaction amount ($)" };
   return PCA_LABELS[index - 1] || { label: `V${index}`, tooltip: `Feature V${index}` };
 };
 
 // -----------------------------
-// Optimized FeatureInput
+// Memoized FeatureInput (device-aware)
 // -----------------------------
-const FeatureInput = memo(function FeatureInput({ index, value, onChange, isMobile }) {
+type FeatureInputProps = {
+  index: number;
+  value: string;
+  onChange: (index: number, value: string) => void;
+  isMobile: boolean;
+};
+
+const FeatureInput = memo(function FeatureInput({ index, value, onChange, isMobile }: FeatureInputProps) {
   const { label, tooltip } = getFeatureLabel(index);
   const styles = useMemo(() => getStyles(isMobile), [isMobile]);
 
-  const handleLocalChange = useCallback(
-    (e) => onChange(index, e.target.value),
-    [index, onChange]
-  );
+  const handleLocalChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => onChange(index, e.target.value), [index, onChange]);
 
   return (
     <div>
@@ -271,19 +167,29 @@ const FeatureInput = memo(function FeatureInput({ index, value, onChange, isMobi
 FeatureInput.displayName = "FeatureInput";
 
 // -----------------------------
-// PredictionPage component
+// Types for prediction result
 // -----------------------------
-export default function PredictionPage() {
+type MLPredictionResult = {
+  prediction: 0 | 1;
+  probability: number;
+  timestamp?: string;
+};
+
+// -----------------------------
+// Main component
+// -----------------------------
+export default function PredictionPage(): JSX.Element {
   const { predict, savePrediction, isLoading } = usePrediction();
-  const [features, setFeatures] = useState(() => Array(30).fill(""));
-  const [result, setResult] = useState(null);
+  const [features, setFeatures] = useState<string[]>(() => Array(30).fill(""));
+  const [result, setResult] = useState<MLPredictionResult | null>(null);
+
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
-  
-  // Memoize styles to prevent recalc on every render
+
   const styles = useMemo(() => getStyles(isMobile), [isMobile]);
 
-  const handleFeatureChange = useCallback((index, value) => {
+  // stable handler
+  const handleFeatureChange = useCallback((index: number, value: string) => {
     setFeatures((prev) => {
       if (prev[index] === value) return prev;
       const next = prev.slice();
@@ -293,27 +199,24 @@ export default function PredictionPage() {
   }, []);
 
   const handleSubmit = useCallback(
-    async (e) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
       try {
-        const numericFeatures = features.map((f) => Number.parseFloat(f) || 0);
+        const numericFeatures = features.map((f) => Number.parseFloat(f as string) || 0);
         const nowIso = new Date().toISOString();
         const predictionResult = await predict(numericFeatures);
 
-        const withTimestamp = {
-          ...predictionResult,
-          timestamp: nowIso,
-        };
-
+        const withTimestamp: MLPredictionResult = { ...predictionResult, timestamp: nowIso };
         setResult(withTimestamp);
-        
-        // Scroll to results on mobile for better UX
+
+        // scroll on mobile to show results
         if (isMobile) {
-            setTimeout(() => {
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            }, 100);
+          setTimeout(() => {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+          }, 100);
         }
 
+        // save asynchronously (do not block UI)
         savePrediction({
           features: numericFeatures,
           prediction: predictionResult.prediction,
@@ -354,7 +257,7 @@ export default function PredictionPage() {
       riskColor: isHighRisk ? "#f87171" : isMediumRisk ? "#fbbf24" : "#4ade80",
       riskBg: isHighRisk ? "rgba(239, 68, 68, 0.15)" : isMediumRisk ? "rgba(251, 191, 36, 0.15)" : "rgba(34, 197, 94, 0.15)",
       riskLevel: isHighRisk ? "HIGH" : isMediumRisk ? "MEDIUM" : "LOW",
-    };
+    } as const;
   }, [result]);
 
   const particles = useMemo(() => {
@@ -370,17 +273,15 @@ export default function PredictionPage() {
 
   return (
     <motion.div
-      // Decreased padding for mobile to gain screen real estate
       className="flex-1 pt-20 md:pt-28 pb-10 md:pb-28 px-3 md:px-4 relative overflow-hidden text-slate-100"
       style={{ background: "#0a0a0d" }}
       variants={PAGE_VARIANTS}
       initial="initial"
       animate="animate"
     >
-      {/* Background visuals - Optimized: Only show heavy animations on Desktop */}
+      {/* Background visuals - Desktop heavy, mobile static */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         {!isMobile ? (
-          /* Desktop: Original Heavy Animations */
           <>
             <motion.div
               className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-20"
@@ -440,13 +341,10 @@ export default function PredictionPage() {
             ))}
           </>
         ) : (
-           /* Mobile: High Performance Static Background Gradient (No Lag) */
-           <div 
-             className="absolute inset-0"
-             style={{
-               background: "linear-gradient(to bottom right, rgba(139, 92, 246, 0.15), rgba(0,0,0,0) 60%)"
-             }}
-           />
+          <div
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(to bottom right, rgba(139, 92, 246, 0.15), rgba(0,0,0,0) 60%)" }}
+          />
         )}
 
         <div
@@ -455,16 +353,13 @@ export default function PredictionPage() {
             backgroundImage:
               "linear-gradient(rgba(139, 92, 246, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.15) 1px, transparent 1px)",
             backgroundSize: "80px 80px",
-            // Remove will-change on mobile
             willChange: isMobile ? "auto" : "transform",
           }}
         />
-        
+
         <div
           className="absolute inset-0"
-          style={{
-            background: "radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.04), transparent 70%)",
-          }}
+          style={{ background: "radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.04), transparent 70%)" }}
         />
       </div>
 
@@ -476,7 +371,7 @@ export default function PredictionPage() {
               className="p-4 md:p-5 rounded-3xl inline-block"
               style={{
                 background: "linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25))",
-                backdropFilter: isMobile ? "none" : "blur(16px)", // Disable blur mobile
+                backdropFilter: isMobile ? "none" : "blur(16px)",
                 border: "1px solid rgba(139, 92, 246, 0.4)",
                 boxShadow: "0 8px 32px rgba(139, 92, 246, 0.3)",
               }}
@@ -485,7 +380,6 @@ export default function PredictionPage() {
             </div>
           </motion.div>
 
-          {/* Adjusted font sizes for mobile */}
           <motion.h1
             className="text-4xl md:text-6xl lg:text-7xl font-bold mb-3 md:mb-5"
             style={{
@@ -499,10 +393,14 @@ export default function PredictionPage() {
           </motion.h1>
 
           <motion.p className="text-lg md:text-2xl max-w-3xl mx-auto px-2" style={{ color: "#cbd5e1" }}>
-            Advanced machine learning prediction with {" "}
-            <span style={{ color: "#a78bfa", fontWeight: 700 }} className="block md:inline">94% accuracy</span>
+            Advanced machine learning prediction with{" "}
+            <span style={{ color: "#a78bfa", fontWeight: 700 }} className="block md:inline">
+              94% accuracy
+            </span>
             <span className="hidden md:inline"> and </span>
-            <span style={{ color: "#60a5fa", fontWeight: 700 }} className="block md:inline">&lt;200ms response time</span>
+            <span style={{ color: "#60a5fa", fontWeight: 700 }} className="block md:inline">
+              &lt;200ms response time
+            </span>
           </motion.p>
         </motion.div>
 
@@ -528,14 +426,12 @@ export default function PredictionPage() {
 
               <CardContent className="relative z-10">
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Optimized Grid: 2 columns on mobile for better touch targets, 3 on desktop */}
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-h-[450px] md:max-h-[500px] overflow-y-auto pr-1 md:pr-2 pb-2" style={{ scrollBehavior: "smooth", WebkitOverflowScrolling: "touch" }}>
                     {features.map((value, index) => (
                       <FeatureInput key={index} index={index} value={value} onChange={handleFeatureChange} isMobile={isMobile} />
                     ))}
                   </div>
 
-                  {/* Mobile-Friendly Buttons: Stacked on mobile, Row on Desktop */}
                   <div className="flex flex-col md:flex-row gap-3 pt-2">
                     <motion.div className="flex-1 order-1 md:order-1" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                       <Button
@@ -546,7 +442,6 @@ export default function PredictionPage() {
                           background: "linear-gradient(135deg, #8b5cf6, #3b82f6)",
                           color: "#ffffff",
                           border: "none",
-                          // Reduce shadow bloom on mobile for performance
                           boxShadow: isMobile ? "none" : "0 10px 40px rgba(139, 92, 246, 0.5)",
                         }}
                       >
@@ -647,13 +542,12 @@ export default function PredictionPage() {
               ) : (
                 <motion.div key="placeholder" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
                   <div className="h-full rounded-2xl p-6 md:p-10 flex flex-col items-center justify-center text-center min-h-[400px] md:min-h-[600px]" style={{ background: isMobile ? "#0F0F12" : "linear-gradient(135deg, rgba(15, 15, 18, 0.95), rgba(15, 15, 18, 0.85))", border: "1px solid rgba(139, 92, 246, 0.35)", backdropFilter: isMobile ? "none" : "blur(20px)", boxShadow: isMobile ? "none" : "0 12px 40px rgba(0, 0, 0, 0.6)" }}>
-                    {/* Hide rotating icon on mobile to save vertical space and GPU */}
                     {!isMobile && (
-                        <motion.div className="mb-8" animate={prefersReducedMotion ? undefined : { rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>
+                      <motion.div className="mb-8" animate={prefersReducedMotion ? undefined : { rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>
                         <div className="p-8 rounded-3xl" style={{ background: "linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2))", border: "1px solid rgba(139, 92, 246, 0.4)", boxShadow: "0 8px 32px rgba(139, 92, 246, 0.3)" }}>
-                            <TrendingDown className="h-20 w-20" style={{ color: "#c4b5fd" }} />
+                          <TrendingDown className="h-20 w-20" style={{ color: "#c4b5fd" }} />
                         </div>
-                        </motion.div>
+                      </motion.div>
                     )}
 
                     <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4" style={{ color: "#ffffff" }}>Awaiting Analysis</h3>

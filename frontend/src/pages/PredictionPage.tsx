@@ -206,6 +206,7 @@ export default function PredictionPage(): JSX.Element {
         const nowIso = new Date().toISOString();
         const predictionResult = await predict(numericFeatures);
 
+        // keep timestamp locally for display
         const withTimestamp: MLPredictionResult = { ...predictionResult, timestamp: nowIso };
         setResult(withTimestamp);
 
@@ -216,13 +217,14 @@ export default function PredictionPage(): JSX.Element {
           }, 100);
         }
 
-        // save asynchronously (do not block UI)
+        // Save to backend (previous working hook expects timestamp field)
+        // Do not await to avoid blocking UI
         savePrediction({
           features: numericFeatures,
           prediction: predictionResult.prediction,
           probability: predictionResult.probability,
           timestamp: nowIso,
-        }).catch((err) => console.error("savePrediction failed", err));
+        }).catch((err: any) => console.error("savePrediction failed", err));
 
         toast.success("🎉 Prediction completed!");
       } catch (error) {

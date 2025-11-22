@@ -6,6 +6,10 @@
       "*": ["./src/types/*"]
     },
 
+    // Output configuration
+    "outDir": "./dist",
+    "rootDir": "./src",
+
     // Node + TypeScript settings
     "module": "nodenext",
     "target": "esnext",

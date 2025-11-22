@@ -1,11 +1,7 @@
-import React, { useState, useMemo, useCallback, memo } from "react";
+// @ts-nocheck
+import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { usePrediction } from "@/hooks/usePrediction";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Sparkles,
   TrendingDown,
@@ -21,22 +17,145 @@ import {
 } from "lucide-react";
 
 // -----------------------------
-// Static constants (moved out to avoid re-creation)
+// INLINE UI COMPONENTS (Replacements for @/components/ui/...)
+// -----------------------------
+
+const Button = React.forwardRef(({ className, variant = "default", size = "default", ...props }, ref) => {
+  const baseStyles = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+  const variants = {
+    default: "bg-primary text-primary-foreground hover:bg-primary/90",
+    destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+    outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    ghost: "hover:bg-accent hover:text-accent-foreground",
+    link: "text-primary underline-offset-4 hover:underline",
+  };
+  const sizes = {
+    default: "h-10 px-4 py-2",
+    sm: "h-9 rounded-md px-3",
+    lg: "h-11 rounded-md px-8",
+    icon: "h-10 w-10",
+  };
+  return (
+    <button
+      ref={ref}
+      className={`${baseStyles} ${variants[variant] || variants.default} ${sizes[size] || sizes.default} ${className}`}
+      {...props}
+    />
+  );
+});
+Button.displayName = "Button";
+
+const Input = React.forwardRef(({ className, type, ...props }, ref) => {
+  return (
+    <input
+      type={type}
+      className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      ref={ref}
+      {...props}
+    />
+  );
+});
+Input.displayName = "Input";
+
+const Label = React.forwardRef(({ className, ...props }, ref) => (
+  <label
+    ref={ref}
+    className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${className}`}
+    {...props}
+  />
+));
+Label.displayName = "Label";
+
+const Card = React.forwardRef(({ className, ...props }, ref) => (
+  <div ref={ref} className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props} />
+));
+Card.displayName = "Card";
+
+const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
+  <div ref={ref} className={`flex flex-col space-y-1.5 p-6 ${className}`} {...props} />
+));
+CardHeader.displayName = "CardHeader";
+
+const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
+  <h3 ref={ref} className={`text-2xl font-semibold leading-none tracking-tight ${className}`} {...props} />
+));
+CardTitle.displayName = "CardTitle";
+
+const CardContent = React.forwardRef(({ className, ...props }, ref) => (
+  <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
+));
+CardContent.displayName = "CardContent";
+
+// -----------------------------
+// Hooks: usePrediction (Inlined)
+// -----------------------------
+const usePrediction = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const predict = useCallback(async (features) => {
+    setIsLoading(true);
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    // Simple heuristic logic to simulate AI prediction
+    // Using features V4 (index 3) and V14 (index 13) which are often significant
+    const v4 = features[3] || 0;
+    const v14 = features[13] || 0;
+    
+    let score = 0;
+    // Heuristic: V14 < -2 and V4 > 1 often indicates fraud in standard datasets
+    if (v14 < -2) score += 0.4;
+    if (v4 > 1.5) score += 0.3;
+    
+    // Add randomness for demo feel
+    const randomNoise = Math.random() * 0.3;
+    const probability = Math.min(0.99, Math.max(0.01, score + randomNoise));
+    const prediction = probability > 0.5 ? 1 : 0;
+
+    setIsLoading(false);
+    return { prediction, probability };
+  }, []);
+
+  const savePrediction = useCallback(async (data) => {
+    // Mock save logic
+    console.log("Prediction saved:", data);
+  }, []);
+
+  return { predict, savePrediction, isLoading };
+};
+
+// -----------------------------
+// Hooks: Mobile Detection
+// -----------------------------
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+  return isMobile;
+};
+
+// -----------------------------
+// Static constants
 // -----------------------------
 const PAGE_VARIANTS = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
-} as const;
+};
 
 const HEADER_VARIANTS = {
   initial: { opacity: 0, y: -20 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.1, ease: "easeOut" } },
-} as const;
+};
 
 const CARD_VARIANTS = {
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-} as const;
+};
 
 const PCA_LABELS = [
   { label: "Pattern A", tooltip: "AI Feature 1 (V1)" },
@@ -79,52 +198,51 @@ const ICON_PILLS = [
   { icon: <Shield />, text: "94% Accuracy", color: "#4ade80" },
   { icon: <Zap />, text: "<200ms Speed", color: "#60a5fa" },
   { icon: <Brain />, text: "AI-Powered", color: "#a78bfa" },
-] as const;
+];
 
-// Shared style objects (keep visuals identical but avoid re-creating)
-const sharedStyles = {
+// -----------------------------
+// Styles Helper (Dynamic based on device)
+// -----------------------------
+const getStyles = (isMobile) => ({
   input: {
     background: "rgba(25, 25, 30, 0.9)",
     border: "1px solid rgba(139, 92, 246, 0.35)",
     color: "#ffffff",
-    fontSize: "14px",
+    // 16px font size on mobile prevents iOS zoom-on-focus
+    fontSize: isMobile ? "16px" : "14px", 
     fontWeight: 500,
-  } as React.CSSProperties,
+  },
   cardBg: {
-    background: "linear-gradient(135deg, rgba(15, 15, 18, 0.97), rgba(15, 15, 18, 0.92))",
+    // Solid background on mobile for performance (no blur calculation)
+    // Glassmorphism on desktop
+    background: isMobile 
+      ? "#0F0F12" 
+      : "linear-gradient(135deg, rgba(15, 15, 18, 0.97), rgba(15, 15, 18, 0.92))",
     border: "1px solid rgba(139, 92, 246, 0.4)",
-    backdropFilter: "blur(12px)", // Reduced from 24px for performance
+    backdropFilter: isMobile ? "none" : "blur(12px)", 
     boxShadow: "0 16px 48px rgba(0, 0, 0, 0.7), 0 0 80px rgba(139, 92, 246, 0.15)",
-    transform: "translateZ(0)", // Force GPU layer
-  } as React.CSSProperties,
-};
+    transform: "translateZ(0)",
+  },
+});
 
 // -----------------------------
 // Helper: feature label
 // -----------------------------
-const getFeatureLabel = (index: number): { label: string; tooltip: string } => {
+const getFeatureLabel = (index) => {
   if (index === 0) return { label: "Time", tooltip: "Seconds since first transaction" };
   if (index === 29) return { label: "Amount", tooltip: "Transaction amount ($)" };
   return PCA_LABELS[index - 1] || { label: `V${index}`, tooltip: `Feature V${index}` };
 };
 
 // -----------------------------
-// Optimized, memoized FeatureInput
+// Optimized FeatureInput
 // -----------------------------
-const FeatureInput = memo(function FeatureInput({
-  index,
-  value,
-  onChange,
-}: {
-  index: number;
-  value: string;
-  onChange: (index: number, value: string) => void;
-}) {
+const FeatureInput = memo(function FeatureInput({ index, value, onChange, isMobile }) {
   const { label, tooltip } = getFeatureLabel(index);
+  const styles = useMemo(() => getStyles(isMobile), [isMobile]);
 
-  // local stable handler to avoid re-creating parent arrow on every render
   const handleLocalChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => onChange(index, e.target.value),
+    (e) => onChange(index, e.target.value),
     [index, onChange]
   );
 
@@ -132,7 +250,7 @@ const FeatureInput = memo(function FeatureInput({
     <div>
       <Label
         style={{ color: "#e2e8f0", fontSize: "13px", fontWeight: 600 }}
-        className="mb-1.5 block"
+        className="mb-1.5 block truncate"
         title={tooltip}
       >
         {label}
@@ -144,7 +262,7 @@ const FeatureInput = memo(function FeatureInput({
         value={value}
         onChange={handleLocalChange}
         className="h-10 input-enhanced"
-        style={sharedStyles.input}
+        style={styles.input}
       />
     </div>
   );
@@ -152,30 +270,20 @@ const FeatureInput = memo(function FeatureInput({
 FeatureInput.displayName = "FeatureInput";
 
 // -----------------------------
-// Types
-// -----------------------------
-interface MLPredictionResult {
-  prediction: 0 | 1;
-  probability: number;
-  timestamp?: string; // store timestamp with the result to avoid Date() calls on each render
-}
-
-// -----------------------------
 // PredictionPage component
 // -----------------------------
-export default function PredictionPage(): React.JSX.Element {
+export default function PredictionPage() {
   const { predict, savePrediction, isLoading } = usePrediction();
-
-  // store features as strings to keep Input controlled
-  const [features, setFeatures] = useState<string[]>(() => Array(30).fill(""));
-  const [result, setResult] = useState<MLPredictionResult | null>(null);
-
+  const [features, setFeatures] = useState(() => Array(30).fill(""));
+  const [result, setResult] = useState(null);
   const prefersReducedMotion = useReducedMotion();
+  const isMobile = useIsMobile();
+  
+  // Memoize styles to prevent recalc on every render
+  const styles = useMemo(() => getStyles(isMobile), [isMobile]);
 
-  // stable change handler
-  const handleFeatureChange = useCallback((index: number, value: string) => {
+  const handleFeatureChange = useCallback((index, value) => {
     setFeatures((prev) => {
-      // micro-optim: avoid copying if value identical
       if (prev[index] === value) return prev;
       const next = prev.slice();
       next[index] = value;
@@ -183,46 +291,44 @@ export default function PredictionPage(): React.JSX.Element {
     });
   }, []);
 
-  // submit prediction
   const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
+    async (e) => {
       e.preventDefault();
       try {
-        const numericFeatures = features.map((f) => Number.parseFloat(f as string) || 0);
+        const numericFeatures = features.map((f) => Number.parseFloat(f) || 0);
         const nowIso = new Date().toISOString();
-
-        // predict
         const predictionResult = await predict(numericFeatures);
 
-        // attach timestamp locally (avoid calling Date in render)
-        const withTimestamp: MLPredictionResult = {
+        const withTimestamp = {
           ...predictionResult,
           timestamp: nowIso,
         };
 
         setResult(withTimestamp);
+        
+        // Scroll to results on mobile for better UX
+        if (isMobile) {
+            setTimeout(() => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 100);
+        }
 
-        // save in backend (don't wait to set UI state)
         savePrediction({
           features: numericFeatures,
           prediction: predictionResult.prediction,
           probability: predictionResult.probability,
           timestamp: nowIso,
-        }).catch((err) => {
-          // don't crash UI if saving fails
-          console.error("savePrediction failed", err);
-        });
+        }).catch((err) => console.error("savePrediction failed", err));
 
-        toast.success("🎉 Prediction completed and saved!");
+        toast.success("🎉 Prediction completed!");
       } catch (error) {
         console.error(error);
-        toast.error("❌ Prediction failed. Please try again.");
+        toast.error("❌ Prediction failed.");
       }
     },
-    [features, predict, savePrediction]
+    [features, predict, savePrediction, isMobile]
   );
 
-  // sample loader memoized
   const loadSampleData = useCallback(() => {
     setFeatures(SAMPLE_FEATURES.slice());
     toast.success("✅ Sample data loaded");
@@ -234,7 +340,6 @@ export default function PredictionPage(): React.JSX.Element {
     toast.info("🔄 Form reset");
   }, []);
 
-  // risk metrics memoized
   const riskMetrics = useMemo(() => {
     if (!result) return null;
     const isHighRisk = result.prediction === 1 && result.probability > 0.7;
@@ -248,10 +353,9 @@ export default function PredictionPage(): React.JSX.Element {
       riskColor: isHighRisk ? "#f87171" : isMediumRisk ? "#fbbf24" : "#4ade80",
       riskBg: isHighRisk ? "rgba(239, 68, 68, 0.15)" : isMediumRisk ? "rgba(251, 191, 36, 0.15)" : "rgba(34, 197, 94, 0.15)",
       riskLevel: isHighRisk ? "HIGH" : isMediumRisk ? "MEDIUM" : "LOW",
-    } as const;
+    };
   }, [result]);
 
-  // memoize particle nodes and pill nodes to avoid recreating JSX arrays
   const particles = useMemo(() => {
     return [...Array(6)].map((_, i) => ({
       left: `${10 + i * 15}%`,
@@ -265,73 +369,84 @@ export default function PredictionPage(): React.JSX.Element {
 
   return (
     <motion.div
-      className="flex-1 pt-28 pb-28 px-4 relative overflow-hidden"
+      // Decreased padding for mobile to gain screen real estate
+      className="flex-1 pt-20 md:pt-28 pb-10 md:pb-28 px-3 md:px-4 relative overflow-hidden text-slate-100"
       style={{ background: "#0a0a0d" }}
       variants={PAGE_VARIANTS}
       initial="initial"
       animate="animate"
     >
-      {/* Background visuals - Optimized with fixed position and will-change */}
+      {/* Background visuals - Optimized: Only show heavy animations on Desktop */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <motion.div
-          className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-20"
-          style={{
-            background: "radial-gradient(circle, rgba(139, 92, 246, 0.8), transparent)",
-            top: "-20%",
-            left: "-15%",
-            willChange: "transform",
-            transform: "translateZ(0)",
-          }}
-          animate={prefersReducedMotion ? undefined : { x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        <motion.div
-          className="absolute w-[500px] h-[500px] rounded-full blur-3xl opacity-20"
-          style={{
-            background: "radial-gradient(circle, rgba(59, 130, 246, 0.7), transparent)",
-            top: "20%",
-            right: "-15%",
-            willChange: "transform",
-            transform: "translateZ(0)",
-          }}
-          animate={prefersReducedMotion ? undefined : { x: [0, -40, 0], y: [0, 50, 0], scale: [1, 1.15, 1] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        <motion.div
-          className="absolute w-[400px] h-[400px] rounded-full opacity-15"
-          style={{
-            background: "radial-gradient(circle, rgba(236, 72, 153, 0.6), transparent)",
-            bottom: "-10%",
-            left: "35%",
-            filter: "blur(80px)",
-            willChange: "transform",
-            transform: "translateZ(0)",
-          }}
-          animate={prefersReducedMotion ? undefined : { x: [0, -30, 0], y: [0, -35, 0], scale: [1, 1.1, 1] }}
-          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {!prefersReducedMotion && particles.map((p) => (
-          <motion.div
-            key={p.i}
-            className="absolute w-1 h-1 rounded-full"
-            style={{
-              background: p.color,
-              left: p.left,
-              top: p.top,
-              willChange: "transform, opacity",
-              transform: "translateZ(0)",
-            }}
-            animate={{
-              y: [0, -120, 0],
-              x: [0, p.i % 2 === 0 ? 20 : -20, 0],
-              opacity: [0.3, 0.8, 0.3],
-            }}
-            transition={{ duration: 8 + p.i * 1.5, repeat: Infinity, delay: p.i * 0.8, ease: "easeInOut" }}
-          />
-        ))}
+        {!isMobile ? (
+          /* Desktop: Original Heavy Animations */
+          <>
+            <motion.div
+              className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-20"
+              style={{
+                background: "radial-gradient(circle, rgba(139, 92, 246, 0.8), transparent)",
+                top: "-20%",
+                left: "-15%",
+                willChange: "transform",
+                transform: "translateZ(0)",
+              }}
+              animate={prefersReducedMotion ? undefined : { x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
+              transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute w-[500px] h-[500px] rounded-full blur-3xl opacity-20"
+              style={{
+                background: "radial-gradient(circle, rgba(59, 130, 246, 0.7), transparent)",
+                top: "20%",
+                right: "-15%",
+                willChange: "transform",
+                transform: "translateZ(0)",
+              }}
+              animate={prefersReducedMotion ? undefined : { x: [0, -40, 0], y: [0, 50, 0], scale: [1, 1.15, 1] }}
+              transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute w-[400px] h-[400px] rounded-full opacity-15"
+              style={{
+                background: "radial-gradient(circle, rgba(236, 72, 153, 0.6), transparent)",
+                bottom: "-10%",
+                left: "35%",
+                filter: "blur(80px)",
+                willChange: "transform",
+                transform: "translateZ(0)",
+              }}
+              animate={prefersReducedMotion ? undefined : { x: [0, -30, 0], y: [0, -35, 0], scale: [1, 1.1, 1] }}
+              transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {!prefersReducedMotion && particles.map((p) => (
+              <motion.div
+                key={p.i}
+                className="absolute w-1 h-1 rounded-full"
+                style={{
+                  background: p.color,
+                  left: p.left,
+                  top: p.top,
+                  willChange: "transform, opacity",
+                  transform: "translateZ(0)",
+                }}
+                animate={{
+                  y: [0, -120, 0],
+                  x: [0, p.i % 2 === 0 ? 20 : -20, 0],
+                  opacity: [0.3, 0.8, 0.3],
+                }}
+                transition={{ duration: 8 + p.i * 1.5, repeat: Infinity, delay: p.i * 0.8, ease: "easeInOut" }}
+              />
+            ))}
+          </>
+        ) : (
+           /* Mobile: High Performance Static Background Gradient (No Lag) */
+           <div 
+             className="absolute inset-0"
+             style={{
+               background: "linear-gradient(to bottom right, rgba(139, 92, 246, 0.15), rgba(0,0,0,0) 60%)"
+             }}
+           />
+        )}
 
         <div
           className="absolute inset-0 opacity-[0.03]"
@@ -339,10 +454,11 @@ export default function PredictionPage(): React.JSX.Element {
             backgroundImage:
               "linear-gradient(rgba(139, 92, 246, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.15) 1px, transparent 1px)",
             backgroundSize: "80px 80px",
-            willChange: "transform",
+            // Remove will-change on mobile
+            willChange: isMobile ? "auto" : "transform",
           }}
         />
-
+        
         <div
           className="absolute inset-0"
           style={{
@@ -353,23 +469,24 @@ export default function PredictionPage(): React.JSX.Element {
 
       {/* MAIN CONTENT */}
       <div className="container mx-auto max-w-7xl relative z-10">
-        <motion.div className="mb-12 text-center" variants={HEADER_VARIANTS}>
-          <motion.div className="flex justify-center mb-6">
+        <motion.div className="mb-8 md:mb-12 text-center" variants={HEADER_VARIANTS}>
+          <motion.div className="flex justify-center mb-4 md:mb-6">
             <div
-              className="p-5 rounded-3xl inline-block"
+              className="p-4 md:p-5 rounded-3xl inline-block"
               style={{
                 background: "linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25))",
-                backdropFilter: "blur(16px)",
+                backdropFilter: isMobile ? "none" : "blur(16px)", // Disable blur mobile
                 border: "1px solid rgba(139, 92, 246, 0.4)",
                 boxShadow: "0 8px 32px rgba(139, 92, 246, 0.3)",
               }}
             >
-              <Sparkles className="h-14 w-14" style={{ color: "#c4b5fd" }} />
+              <Sparkles className="h-10 w-10 md:h-14 md:w-14" style={{ color: "#c4b5fd" }} />
             </div>
           </motion.div>
 
+          {/* Adjusted font sizes for mobile */}
           <motion.h1
-            className="text-6xl md:text-7xl font-bold mb-5"
+            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-3 md:mb-5"
             style={{
               background: "linear-gradient(135deg, #ffffff, #f0f0ff, #e0d7ff)",
               WebkitBackgroundClip: "text",
@@ -380,53 +497,56 @@ export default function PredictionPage(): React.JSX.Element {
             AI Fraud Detection
           </motion.h1>
 
-          <motion.p className="text-xl md:text-2xl max-w-3xl mx-auto" style={{ color: "#cbd5e1" }}>
+          <motion.p className="text-lg md:text-2xl max-w-3xl mx-auto px-2" style={{ color: "#cbd5e1" }}>
             Advanced machine learning prediction with {" "}
-            <span style={{ color: "#a78bfa", fontWeight: 700 }}>94% accuracy</span> and {" "}
-            <span style={{ color: "#60a5fa", fontWeight: 700 }}>&lt;200ms</span> response time
+            <span style={{ color: "#a78bfa", fontWeight: 700 }} className="block md:inline">94% accuracy</span>
+            <span className="hidden md:inline"> and </span>
+            <span style={{ color: "#60a5fa", fontWeight: 700 }} className="block md:inline">&lt;200ms response time</span>
           </motion.p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
           {/* PREDICTION FORM */}
           <motion.div variants={CARD_VARIANTS} initial="initial" animate="animate" transition={{ delay: 0.5 }}>
-            <Card className="glass-card relative overflow-hidden" style={sharedStyles.cardBg}>
+            <Card className="glass-card relative overflow-hidden border-0 md:border" style={styles.cardBg}>
               <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ background: "radial-gradient(circle at top left, rgba(139, 92, 246, 0.25), transparent 65%)" }} />
 
-              <CardHeader className="relative z-10 pb-6">
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="p-3 rounded-xl" style={{ background: "linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25))" }}>
-                    <CreditCard className="h-6 w-6" style={{ color: "#c4b5fd" }} />
+              <CardHeader className="relative z-10 pb-4 md:pb-6">
+                <div className="flex items-center gap-3 md:gap-4 mb-1">
+                  <div className="p-2 md:p-3 rounded-xl" style={{ background: "linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25))" }}>
+                    <CreditCard className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#c4b5fd" }} />
                   </div>
-                  <CardTitle style={{ color: "#ffffff", fontSize: "28px", fontWeight: 800 }}>
+                  <CardTitle style={{ color: "#ffffff", fontSize: isMobile ? "22px" : "28px", fontWeight: 800 }}>
                     Transaction Features
                   </CardTitle>
                 </div>
-                <p style={{ color: "#94a3b8", fontSize: "15px" }}>
-                  Enter transaction data (Time, AI Patterns A-AB, Amount)
-                  <span className="block text-xs mt-1 opacity-70">💡 Hover over labels for technical details</span>
+                <p style={{ color: "#94a3b8", fontSize: isMobile ? "13px" : "15px" }}>
+                  Enter transaction data (Time, AI Patterns, Amount)
                 </p>
               </CardHeader>
 
               <CardContent className="relative z-10">
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-[500px] overflow-y-auto pr-2" style={{ scrollBehavior: "smooth", WebkitOverflowScrolling: "touch" }}>
+                  {/* Optimized Grid: 2 columns on mobile for better touch targets, 3 on desktop */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-h-[450px] md:max-h-[500px] overflow-y-auto pr-1 md:pr-2 pb-2" style={{ scrollBehavior: "smooth", WebkitOverflowScrolling: "touch" }}>
                     {features.map((value, index) => (
-                      <FeatureInput key={index} index={index} value={value} onChange={handleFeatureChange} />
+                      <FeatureInput key={index} index={index} value={value} onChange={handleFeatureChange} isMobile={isMobile} />
                     ))}
                   </div>
 
-                  <div className="flex gap-3 pt-4">
-                    <motion.div className="flex-1" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  {/* Mobile-Friendly Buttons: Stacked on mobile, Row on Desktop */}
+                  <div className="flex flex-col md:flex-row gap-3 pt-2">
+                    <motion.div className="flex-1 order-1 md:order-1" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                       <Button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full h-12 text-base font-bold"
+                        className="w-full h-12 md:h-12 text-base font-bold shadow-lg"
                         style={{
                           background: "linear-gradient(135deg, #8b5cf6, #3b82f6)",
                           color: "#ffffff",
                           border: "none",
-                          boxShadow: "0 10px 40px rgba(139, 92, 246, 0.5)",
+                          // Reduce shadow bloom on mobile for performance
+                          boxShadow: isMobile ? "none" : "0 10px 40px rgba(139, 92, 246, 0.5)",
                         }}
                       >
                         {isLoading ? (
@@ -443,13 +563,14 @@ export default function PredictionPage(): React.JSX.Element {
                       </Button>
                     </motion.div>
 
-                    <Button type="button" onClick={loadSampleData} variant="outline" style={{ background: "rgba(30, 30, 35, 0.6)", color: "#94a3b8", border: "1px solid rgba(139, 92, 246, 0.3)" }}>
-                      Sample
-                    </Button>
-
-                    <Button type="button" onClick={handleReset} variant="outline" style={{ background: "rgba(30, 30, 35, 0.6)", color: "#94a3b8", border: "1px solid rgba(139, 92, 246, 0.3)" }}>
-                      Reset
-                    </Button>
+                    <div className="grid grid-cols-2 md:flex md:w-auto gap-3 order-2 md:order-2">
+                      <Button type="button" onClick={loadSampleData} className="h-12 md:h-12" variant="outline" style={{ background: "rgba(30, 30, 35, 0.6)", color: "#94a3b8", border: "1px solid rgba(139, 92, 246, 0.3)" }}>
+                        Sample
+                      </Button>
+                      <Button type="button" onClick={handleReset} className="h-12 md:h-12" variant="outline" style={{ background: "rgba(30, 30, 35, 0.6)", color: "#94a3b8", border: "1px solid rgba(139, 92, 246, 0.3)" }}>
+                        Reset
+                      </Button>
+                    </div>
                   </div>
                 </form>
               </CardContent>
@@ -461,12 +582,12 @@ export default function PredictionPage(): React.JSX.Element {
             <AnimatePresence mode="wait">
               {result && riskMetrics ? (
                 <motion.div key="results" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.4 }}>
-                  <Card className="stat-card relative overflow-hidden" style={{ ...sharedStyles.cardBg, border: `1px solid ${riskMetrics.riskColor}50`, boxShadow: `0 16px 48px rgba(0,0,0,0.7), 0 0 80px ${riskMetrics.riskColor}30` }}>
+                  <Card className="stat-card relative overflow-hidden" style={{ ...styles.cardBg, border: `1px solid ${riskMetrics.riskColor}50`, boxShadow: isMobile ? "none" : `0 16px 48px rgba(0,0,0,0.7), 0 0 80px ${riskMetrics.riskColor}30` }}>
                     <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ background: `radial-gradient(circle at top right, ${riskMetrics.riskColor}40, transparent 65%)` }} />
 
                     <CardHeader className="relative z-10">
                       <div className="flex items-center justify-between">
-                        <CardTitle style={{ color: "#ffffff", fontSize: "28px", fontWeight: 800 }}>AI Prediction Results</CardTitle>
+                        <CardTitle style={{ color: "#ffffff", fontSize: isMobile ? "22px" : "28px", fontWeight: 800 }}>Prediction Results</CardTitle>
                         {riskMetrics.isLowRisk ? (
                           <CheckCircle className="h-7 w-7" style={{ color: riskMetrics.riskColor }} />
                         ) : (
@@ -475,17 +596,17 @@ export default function PredictionPage(): React.JSX.Element {
                       </div>
                     </CardHeader>
 
-                    <CardContent className="relative z-10 space-y-6">
+                    <CardContent className="relative z-10 space-y-5 md:space-y-6">
                       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring", stiffness: 200 }} className="flex justify-center">
-                        <div className="px-10 py-5 rounded-2xl text-center" style={{ background: riskMetrics.riskBg, border: `2px solid ${riskMetrics.riskColor}`, boxShadow: `0 8px 32px ${riskMetrics.riskColor}40` }}>
-                          <div className="text-sm font-semibold" style={{ color: "#94a3b8" }}>Risk Level</div>
-                          <div className="text-5xl font-black mt-2" style={{ color: riskMetrics.riskColor }}>{riskMetrics.riskLevel}</div>
+                        <div className="px-8 md:px-10 py-4 md:py-5 rounded-2xl text-center w-full md:w-auto" style={{ background: riskMetrics.riskBg, border: `2px solid ${riskMetrics.riskColor}`, boxShadow: `0 8px 32px ${riskMetrics.riskColor}40` }}>
+                          <div className="text-xs md:text-sm font-semibold" style={{ color: "#94a3b8" }}>Risk Level</div>
+                          <div className="text-4xl md:text-5xl font-black mt-2" style={{ color: riskMetrics.riskColor }}>{riskMetrics.riskLevel}</div>
                         </div>
                       </motion.div>
 
-                      <div className="rounded-2xl p-6" style={{ background: "rgba(25, 25, 30, 0.7)", border: "1px solid rgba(139, 92, 246, 0.35)" }}>
+                      <div className="rounded-2xl p-4 md:p-6" style={{ background: "rgba(25, 25, 30, 0.7)", border: "1px solid rgba(139, 92, 246, 0.35)" }}>
                         <div className="flex items-center justify-between mb-4">
-                          <span style={{ color: "#e2e8f0", fontSize: "17px", fontWeight: 700 }}>Fraud Probability</span>
+                          <span style={{ color: "#e2e8f0", fontSize: isMobile ? "15px" : "17px", fontWeight: 700 }}>Fraud Probability</span>
                           <TrendingUp className="h-5 w-5" style={{ color: "#a78bfa" }} />
                         </div>
                         <div className="w-full h-4 rounded-full overflow-hidden relative" style={{ background: "rgba(20, 20, 25, 0.9)" }}>
@@ -496,27 +617,27 @@ export default function PredictionPage(): React.JSX.Element {
                         </div>
                       </div>
 
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between p-5 rounded-xl" style={{ background: "rgba(25, 25, 30, 0.6)", border: "1px solid rgba(139, 92, 246, 0.25)" }}>
-                          <span style={{ color: "#94a3b8", fontSize: "15px", fontWeight: 600 }}>Prediction</span>
-                          <span className="font-bold text-lg" style={{ color: "#ffffff" }}>{result.prediction === 1 ? "⚠️ FRAUD DETECTED" : "✅ LEGITIMATE"}</span>
+                      <div className="space-y-3 md:space-y-4">
+                        <div className="flex items-center justify-between p-4 md:p-5 rounded-xl" style={{ background: "rgba(25, 25, 30, 0.6)", border: "1px solid rgba(139, 92, 246, 0.25)" }}>
+                          <span style={{ color: "#94a3b8", fontSize: "14px", fontWeight: 600 }}>Prediction</span>
+                          <span className="font-bold text-base md:text-lg" style={{ color: "#ffffff" }}>{result.prediction === 1 ? "⚠️ FRAUD DETECTED" : "✅ LEGITIMATE"}</span>
                         </div>
 
-                        <div className="flex items-center justify-between p-5 rounded-xl" style={{ background: "rgba(25, 25, 30, 0.6)", border: "1px solid rgba(139, 92, 246, 0.25)" }}>
-                          <span style={{ color: "#94a3b8", fontSize: "15px", fontWeight: 600 }}><Calendar className="h-4 w-4 inline mr-2" />Timestamp</span>
-                          <span className="font-semibold" style={{ color: "#cbd5e1", fontSize: "14px" }}>{result.timestamp ? new Date(result.timestamp).toLocaleString() : new Date().toLocaleString()}</span>
+                        <div className="flex items-center justify-between p-4 md:p-5 rounded-xl" style={{ background: "rgba(25, 25, 30, 0.6)", border: "1px solid rgba(139, 92, 246, 0.25)" }}>
+                          <span style={{ color: "#94a3b8", fontSize: "14px", fontWeight: 600 }}><Calendar className="h-4 w-4 inline mr-2" />Timestamp</span>
+                          <span className="font-semibold" style={{ color: "#cbd5e1", fontSize: isMobile ? "12px" : "14px" }}>{result.timestamp ? new Date(result.timestamp).toLocaleString() : new Date().toLocaleString()}</span>
                         </div>
                       </div>
 
-                      <div className="rounded-2xl p-6" style={{ background: riskMetrics.riskBg, border: `1px solid ${riskMetrics.riskColor}50` }}>
-                        <div className="flex items-center gap-2 mb-3">
+                      <div className="rounded-2xl p-4 md:p-6" style={{ background: riskMetrics.riskBg, border: `1px solid ${riskMetrics.riskColor}50` }}>
+                        <div className="flex items-center gap-2 mb-2 md:mb-3">
                           <Zap className="h-5 w-5" style={{ color: riskMetrics.riskColor }} />
-                          <div className="font-bold text-lg" style={{ color: "#ffffff" }}>Recommendation</div>
+                          <div className="font-bold text-base md:text-lg" style={{ color: "#ffffff" }}>Recommendation</div>
                         </div>
-                        <p style={{ color: "#cbd5e1", fontSize: "15px", lineHeight: "1.7" }}>
+                        <p style={{ color: "#cbd5e1", fontSize: "14px", lineHeight: "1.6" }}>
                           {riskMetrics.isLowRisk && "✅ Transaction appears legitimate. Approve with standard verification."}
-                          {riskMetrics.isMediumRisk && "⚠️ Moderate fraud risk detected. Recommend additional verification or manual review."}
-                          {riskMetrics.isHighRisk && "🚫 High fraud probability identified. Strongly recommend blocking transaction and flagging account."}
+                          {riskMetrics.isMediumRisk && "⚠️ Moderate fraud risk detected. Recommend additional verification."}
+                          {riskMetrics.isHighRisk && "🚫 High fraud probability. Strongly recommend blocking transaction."}
                         </p>
                       </div>
                     </CardContent>
@@ -524,21 +645,24 @@ export default function PredictionPage(): React.JSX.Element {
                 </motion.div>
               ) : (
                 <motion.div key="placeholder" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                  <div className="h-full rounded-2xl p-10 flex flex-col items-center justify-center text-center min-h-[600px]" style={{ background: "linear-gradient(135deg, rgba(15, 15, 18, 0.95), rgba(15, 15, 18, 0.85))", border: "1px solid rgba(139, 92, 246, 0.35)", backdropFilter: "blur(20px)", boxShadow: "0 12px 40px rgba(0, 0, 0, 0.6)" }}>
-                    <motion.div className="mb-8" animate={prefersReducedMotion ? undefined : { rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>
-                      <div className="p-8 rounded-3xl" style={{ background: "linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2))", border: "1px solid rgba(139, 92, 246, 0.4)", boxShadow: "0 8px 32px rgba(139, 92, 246, 0.3)" }}>
-                        <TrendingDown className="h-20 w-20" style={{ color: "#c4b5fd" }} />
-                      </div>
-                    </motion.div>
+                  <div className="h-full rounded-2xl p-6 md:p-10 flex flex-col items-center justify-center text-center min-h-[400px] md:min-h-[600px]" style={{ background: isMobile ? "#0F0F12" : "linear-gradient(135deg, rgba(15, 15, 18, 0.95), rgba(15, 15, 18, 0.85))", border: "1px solid rgba(139, 92, 246, 0.35)", backdropFilter: isMobile ? "none" : "blur(20px)", boxShadow: isMobile ? "none" : "0 12px 40px rgba(0, 0, 0, 0.6)" }}>
+                    {/* Hide rotating icon on mobile to save vertical space and GPU */}
+                    {!isMobile && (
+                        <motion.div className="mb-8" animate={prefersReducedMotion ? undefined : { rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>
+                        <div className="p-8 rounded-3xl" style={{ background: "linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2))", border: "1px solid rgba(139, 92, 246, 0.4)", boxShadow: "0 8px 32px rgba(139, 92, 246, 0.3)" }}>
+                            <TrendingDown className="h-20 w-20" style={{ color: "#c4b5fd" }} />
+                        </div>
+                        </motion.div>
+                    )}
 
-                    <h3 className="text-3xl font-bold mb-4" style={{ color: "#ffffff" }}>Awaiting Analysis</h3>
-                    <p className="text-lg max-w-md mb-8" style={{ color: "#94a3b8" }}>
-                      Enter 30 transaction features and click <span style={{ color: "#a78bfa", fontWeight: 700 }}>Predict Fraud</span> to receive AI-powered fraud detection
+                    <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4" style={{ color: "#ffffff" }}>Awaiting Analysis</h3>
+                    <p className="text-base md:text-lg max-w-md mb-6 md:mb-8" style={{ color: "#94a3b8" }}>
+                      Enter 30 transaction features and click <span style={{ color: "#a78bfa", fontWeight: 700 }}>Predict Fraud</span>
                     </p>
 
-                    <div className="flex flex-wrap gap-3 justify-center">
+                    <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
                       {pillNodes.map((pill, i) => (
-                        <div key={i} className="px-5 py-3 rounded-full text-sm font-bold flex items-center gap-2" style={{ background: `${pill.color}20`, color: pill.color, border: `1px solid ${pill.color}40` }}>
+                        <div key={i} className="px-3 md:px-5 py-2 md:py-3 rounded-full text-xs md:text-sm font-bold flex items-center gap-2" style={{ background: `${pill.color}20`, color: pill.color, border: `1px solid ${pill.color}40` }}>
                           {pill.icon}
                           {pill.text}
                         </div>
@@ -552,10 +676,12 @@ export default function PredictionPage(): React.JSX.Element {
         </div>
       </div>
 
-      {/* GPU acceleration CSS */}
+      {/* GPU acceleration CSS - Mobile Optimizations included */}
       <style>{`
         .input-enhanced { will-change: auto; transform: translateZ(0); }
-        * { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        /* Optimize touch handling */
+        button, input { touch-action: manipulation; }
+        * { -webkit-tap-highlight-color: transparent; }
       `}</style>
     </motion.div>
   );

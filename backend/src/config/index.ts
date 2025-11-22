@@ -39,6 +39,7 @@ type AppConfig = {
   CLERK_WEBHOOK_SECRET: string;
 
   LOG_LEVEL: string;
+  CORS_ORIGINS: (string | RegExp)[];
 };
 
 let CONFIG: AppConfig;
@@ -66,6 +67,13 @@ try {
   const REDIS_URL = process.env.REDIS_URL;
   const CLERK_API_KEY = process.env.CLERK_API_KEY;
 
+  // CORS Origins - parse from comma-separated string
+  const CORS_ORIGINS_RAW = process.env.CORS_ORIGINS || "http://localhost:5173";
+  const CORS_ORIGINS: (string | RegExp)[] = [
+    ...CORS_ORIGINS_RAW.split(",").map((origin) => origin.trim()),
+    /^https:\/\/.*\.ngrok-free\.app$/ // Always allow ngrok URLs
+  ];
+
   CONFIG = {
     NODE_ENV,
     PORT,
@@ -74,6 +82,7 @@ try {
     CLERK_JWT_ISSUER,
     CLERK_WEBHOOK_SECRET,
     LOG_LEVEL,
+    CORS_ORIGINS,
     ...(REDIS_URL ? { REDIS_URL } : {}),
     ...(CLERK_API_KEY ? { CLERK_API_KEY } : {}),
   };

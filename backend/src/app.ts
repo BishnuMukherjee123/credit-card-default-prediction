@@ -1,6 +1,7 @@
 // src/app.ts
 import express from "express";
 import cors from "cors";
+import CONFIG from "./config/index.js";
 
 import { errorHandler } from "./middleware/error.middleware.js";
 import testRouter from "./routes/test.route.js";
@@ -18,7 +19,7 @@ const app = express();
 ---------------------------------------- */
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: CONFIG.CORS_ORIGINS,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: [

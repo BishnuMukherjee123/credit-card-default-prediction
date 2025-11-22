@@ -83,3 +83,12 @@ typings/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# TypeScript build output
+dist/
+build/
+*.js.map
+
+# ngrok
+ngrok.zip
+ngrok.exe

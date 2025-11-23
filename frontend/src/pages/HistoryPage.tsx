@@ -288,7 +288,7 @@ export default function HistoryPage() {
       {/* CONTENT */}
       <div className="container mx-auto max-w-6xl relative z-10">
         {/* HEADER */}
-        <motion.div className="mb-6 sm:mb-8 md:mb-10 text-center" variants={headerVariants}>
+        <motion.div className="mb-6 sm:mb-8 md:mb-10 md:mt-0 sm:mt-6 text-center" variants={headerVariants}>
           <motion.div
             className="flex justify-center mb-3 sm:mb-4 md:mb-5"
             initial={{ scale: 0 }}

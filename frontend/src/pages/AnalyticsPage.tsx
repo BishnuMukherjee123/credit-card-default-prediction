@@ -94,7 +94,7 @@ export default function AnalyticsPage() {
 
   return (
     <motion.div 
-      className="flex-1 pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8 md:pb-12 px-3 sm:px-4 md:px-6 lg:px-8 relative overflow-hidden"
+      className="flex-1 md:pt-16 pt-23 lg:pt-16 md:pt-24 pb-6 sm:pb-8 md:pb-12 px-3 sm:px-4 md:px-6 lg:px-8 relative overflow-hidden"
       style={{ background: '#0a0a0d' }}
       variants={pageVariants}
       initial="initial"
@@ -126,7 +126,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Year Selector */}
-          <div className="flex items-center gap-2 sm:gap-3 bg-white/5 p-1 sm:p-1.5 rounded-lg sm:rounded-xl border border-white/10 backdrop-blur-md w-fit">
+          <div className="flex items-center gap-2 sm:gap-3 bg-white/5 p-1 sm:p-1.5 rounded-lg sm:rounded-xl border border-white/10 backdrop-blur-md w-fit z-10">
             <div className="px-2 sm:px-3 py-1.5 sm:py-2 text-slate-400">
               <Calendar className="h-4 w-4 sm:h-5 sm:w-5" />
             </div>

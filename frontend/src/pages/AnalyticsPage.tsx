@@ -94,7 +94,7 @@ export default function AnalyticsPage() {
 
   return (
     <motion.div 
-      className="flex-1 md:pt-16 pt-23 lg:pt-16 md:pt-24 pb-6 sm:pb-8 md:pb-12 px-3 sm:px-4 md:px-6 lg:px-8 relative overflow-hidden"
+      className="flex-1 pt-24 pb-6 sm:pb-8 md:pb-12 px-3 sm:px-4 md:px-6 lg:px-8 relative overflow-hidden"
       style={{ background: '#0a0a0d' }}
       variants={pageVariants}
       initial="initial"

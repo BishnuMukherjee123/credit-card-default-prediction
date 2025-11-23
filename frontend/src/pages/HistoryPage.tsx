@@ -1,5 +1,6 @@
-// ✨ OPTIMIZED: all visual, color, animation remain EXACTLY THE SAME.
-// ✨ Only performance improvements, memoization, and rerender fixes added.
+// ✨ MOBILE-OPTIMIZED: Responsive for all screen sizes
+// ✨ All visual, color, animation remain EXACTLY THE SAME.
+// ✨ Only mobile breakpoints and spacing adjustments added.
 
 import { useEffect, useState, useMemo, } from "react";
 import React from "react";
@@ -34,9 +35,9 @@ const cardVariants = {
 
 // ---------- MEMOIZED RISK UTILS ----------
 const riskIconMap: Record<string, React.JSX.Element> = {
-  low: <CheckCircle className="h-6 w-6" style={{ color: "#4ade80" }} />,
-  medium: <AlertTriangle className="h-6 w-6" style={{ color: "#fbbf24" }} />,
-  high: <AlertCircle className="h-6 w-6" style={{ color: "#f87171" }} />
+  low: <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: "#4ade80" }} />,
+  medium: <AlertTriangle className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: "#fbbf24" }} />,
+  high: <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: "#f87171" }} />
 };
 
 const riskColorMap = {
@@ -116,12 +117,12 @@ const HistoryItem = React.memo(({ item, index }: { item: PredictionResult; index
           }}
         />
 
-        <CardContent className="p-6 pl-8 relative z-10">
-          <div className="flex items-center justify-between gap-6">
+        <CardContent className="p-4 pl-6 sm:p-6 sm:pl-8 relative z-10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
             {/* LEFT */}
-            <div className="flex items-center gap-5 flex-1">
+            <div className="flex items-center gap-3 sm:gap-5 flex-1 w-full sm:w-auto">
               <div
-                className="p-3 rounded-xl"
+                className="p-2 sm:p-3 rounded-xl flex-shrink-0"
                 style={{
                   background: colors.bg,
                   border: `1px solid ${colors.border}`
@@ -130,17 +131,17 @@ const HistoryItem = React.memo(({ item, index }: { item: PredictionResult; index
                 {riskIconMap[risk]}
               </div>
 
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-1 sm:mb-2">
                   <span
-                    className="text-xl font-bold"
+                    className="text-lg sm:text-xl font-bold"
                     style={{ color: colors.text }}
                   >
                     {risk.toUpperCase()}
                   </span>
 
                   <span
-                    className="px-3 py-1 rounded-full text-sm font-semibold"
+                    className="px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-semibold inline-block w-fit"
                     style={{
                       background: colors.bg,
                       color: colors.text,
@@ -153,25 +154,25 @@ const HistoryItem = React.memo(({ item, index }: { item: PredictionResult; index
 
                 {/* DATE */}
                 <div
-                  className="flex items-center gap-2 text-sm"
+                  className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
                   style={{ color: "#94a3b8" }}
                 >
-                  <Calendar className="h-4 w-4" />
-                  {new Date(dateStr).toLocaleString()}
+                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                  <span className="truncate">{new Date(dateStr).toLocaleString()}</span>
                 </div>
               </div>
             </div>
 
             {/* RIGHT */}
-            <div className="text-right">
+            <div className="text-left sm:text-right w-full sm:w-auto">
               <div
-                className="text-sm font-medium mb-1"
+                className="text-xs sm:text-sm font-medium mb-1"
                 style={{ color: "#94a3b8" }}
               >
                 Prediction
               </div>
 
-              <div className="text-lg font-bold" style={{ color: "#ffffff" }}>
+              <div className="text-base sm:text-lg font-bold" style={{ color: "#ffffff" }}>
                 {item.prediction === 1 ? (
                   <span style={{ color: "#f87171" }}>⚠️ Default</span>
                 ) : (
@@ -272,7 +273,7 @@ export default function HistoryPage() {
 
   return (
     <motion.div
-      className="flex-1 pt-28 pb-28 px-4 relative overflow-hidden"
+      className="flex-1 pt-16 sm:pt-20 md:pt-28 pb-16 sm:pb-20 md:pb-28 px-3 sm:px-4 relative overflow-hidden"
       style={{ background: "#0a0a0d" }}
       variants={pageVariants}
       initial="initial"
@@ -287,15 +288,15 @@ export default function HistoryPage() {
       {/* CONTENT */}
       <div className="container mx-auto max-w-6xl relative z-10">
         {/* HEADER */}
-        <motion.div className="mb-10 text-center" variants={headerVariants}>
+        <motion.div className="mb-6 sm:mb-8 md:mb-10 text-center" variants={headerVariants}>
           <motion.div
-            className="flex justify-center mb-5"
+            className="flex justify-center mb-3 sm:mb-4 md:mb-5"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.15, type: "spring", stiffness: 250 }}
           >
             <div
-              className="p-4 rounded-3xl inline-block"
+              className="p-3 sm:p-4 rounded-2xl sm:rounded-3xl inline-block"
               style={{
                 background:
                   "linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2))",
@@ -303,12 +304,12 @@ export default function HistoryPage() {
                 boxShadow: "0 8px 32px rgba(139, 92, 246, 0.3)"
               }}
             >
-              <TrendingUp className="h-10 w-10" style={{ color: "#a78bfa" }} />
+              <TrendingUp className="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10" style={{ color: "#a78bfa" }} />
             </div>
           </motion.div>
 
           <motion.h1
-            className="text-6xl md:text-7xl font-bold mb-4"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-2 sm:mb-3 md:mb-4 px-2"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.4 }}
@@ -322,7 +323,7 @@ export default function HistoryPage() {
           </motion.h1>
 
           <motion.p
-            className="text-xl max-w-2xl mx-auto"
+            className="text-sm sm:text-base md:text-xl max-w-2xl mx-auto px-4"
             style={{ color: "#cbd5e1" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -334,7 +335,7 @@ export default function HistoryPage() {
 
         {/* STATS */}
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+          className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8"
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.4 }}
@@ -344,25 +345,25 @@ export default function HistoryPage() {
               label: "Total",
               value: stats.total,
               color: "#a78bfa",
-              icon: <Sparkles className="h-5 w-5" />
+              icon: <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
             },
             {
               label: "Low Risk",
               value: stats.low,
               color: "#4ade80",
-              icon: <CheckCircle className="h-5 w-5" />
+              icon: <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
             },
             {
               label: "Medium Risk",
               value: stats.medium,
               color: "#fbbf24",
-              icon: <AlertTriangle className="h-5 w-5" />
+              icon: <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5" />
             },
             {
               label: "High Risk",
               value: stats.high,
               color: "#f87171",
-              icon: <AlertCircle className="h-5 w-5" />
+              icon: <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5" />
             }
           ].map((stat, idx) => (
             <motion.div
@@ -389,23 +390,23 @@ export default function HistoryPage() {
                   transition: "all 0.15s ease"
                 }}
               >
-                <CardContent className="p-5">
-                  <div className="flex items-center justify-between mb-2">
+                <CardContent className="p-3 sm:p-4 md:p-5">
+                  <div className="flex items-center justify-between mb-1 sm:mb-2">
                     <div
-                      className="p-2 rounded-lg"
+                      className="p-1.5 sm:p-2 rounded-lg"
                       style={{ background: `${stat.color}20` }}
                     >
                       <span style={{ color: stat.color }}>{stat.icon}</span>
                     </div>
                   </div>
                   <div
-                    className="text-3xl font-black"
+                    className="text-2xl sm:text-3xl font-black"
                     style={{ color: stat.color }}
                   >
                     {stat.value}
                   </div>
                   <div
-                    className="text-sm font-medium"
+                    className="text-xs sm:text-sm font-medium"
                     style={{ color: "#94a3b8" }}
                   >
                     {stat.label}
@@ -424,10 +425,10 @@ export default function HistoryPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-center py-20"
+              className="text-center py-12 sm:py-16 md:py-20"
             >
               <motion.div
-                className="inline-block p-4 rounded-full mb-4"
+                className="inline-block p-3 sm:p-4 rounded-full mb-3 sm:mb-4"
                 style={{ background: "rgba(139, 92, 246, 0.15)" }}
                 animate={{
                   rotate: 360,
@@ -439,10 +440,10 @@ export default function HistoryPage() {
                   ease: "linear"
                 }}
               >
-                <Sparkles className="h-8 w-8" style={{ color: "#a78bfa" }} />
+                <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" style={{ color: "#a78bfa" }} />
               </motion.div>
 
-              <p style={{ color: "#94a3b8", fontSize: "18px" }}>
+              <p style={{ color: "#94a3b8", fontSize: "16px" }} className="sm:text-lg">
                 Loading history...
               </p>
             </motion.div>
@@ -452,31 +453,31 @@ export default function HistoryPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-center py-20"
+              className="text-center py-12 sm:py-16 md:py-20"
             >
               <div
-                className="inline-block p-6 rounded-2xl mb-4"
+                className="inline-block p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl mb-3 sm:mb-4"
                 style={{
                   background: "rgba(139, 92, 246, 0.1)",
                   border: "1px solid rgba(139, 92, 246, 0.2)"
                 }}
               >
-                <TrendingUp className="h-12 w-12" style={{ color: "#a78bfa" }} />
+                <TrendingUp className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12" style={{ color: "#a78bfa" }} />
               </div>
               <h3
-                className="text-2xl font-bold mb-2"
+                className="text-xl sm:text-2xl font-bold mb-2 px-4"
                 style={{ color: "#ffffff" }}
               >
                 No Predictions Yet
               </h3>
-              <p style={{ color: "#94a3b8", fontSize: "16px" }}>
+              <p style={{ color: "#94a3b8" }} className="text-sm sm:text-base px-4">
                 Start by creating your first credit risk prediction
               </p>
             </motion.div>
           ) : (
             <motion.div
               key="history"
-              className="space-y-4"
+              className="space-y-3 sm:space-y-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >

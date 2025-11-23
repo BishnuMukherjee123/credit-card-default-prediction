@@ -5,16 +5,18 @@ import { Toaster } from './components/ui/sonner';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { AnimatePresence, motion } from 'framer-motion';
-import { type ReactNode } from 'react';
+import { type ReactNode, lazy, Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
-
-import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
-import PredictionPage from './pages/PredictionPage';
-import HistoryPage from './pages/HistoryPage';
-import AnalyticsPage from './pages/AnalyticsPage';
 import type { JSX } from "react";
+
+// ✅ LAZY LOAD ALL PAGES - Dramatically improves initial load time
+// Each page is now in a separate chunk, loaded only when needed
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const PredictionPage = lazy(() => import('./pages/PredictionPage'));
+const HistoryPage = lazy(() => import('./pages/HistoryPage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 
 // ✅ BEAUTIFUL LOADING COMPONENT
 const LoadingScreen = () => (
@@ -156,42 +158,44 @@ function AppRoutes(): JSX.Element {
       
       <main className="flex-1 w-full flex flex-col bg-[#0a0a0d]">
         <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            
-            <Route path="/" element={<RootRedirect />} />
-            
-            <Route path="/login" element={
-              <AuthRoute>
-                <LoginPage />
-              </AuthRoute>
-            } />
-            
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/predict" element={
-              <ProtectedRoute>
-                <PredictionPage />
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/history" element={
-              <ProtectedRoute>
-                <HistoryPage />
-              </ProtectedRoute>
-            } />
+          <Suspense fallback={<LoadingScreen />}>
+            <Routes location={location} key={location.pathname}>
+              
+              <Route path="/" element={<RootRedirect />} />
+              
+              <Route path="/login" element={
+                <AuthRoute>
+                  <LoginPage />
+                </AuthRoute>
+              } />
+              
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/predict" element={
+                <ProtectedRoute>
+                  <PredictionPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/history" element={
+                <ProtectedRoute>
+                  <HistoryPage />
+                </ProtectedRoute>
+              } />
 
-            <Route path="/analytics" element={
-              <ProtectedRoute>
-                <AnalyticsPage />
-              </ProtectedRoute>
-            } />
+              <Route path="/analytics" element={
+                <ProtectedRoute>
+                  <AnalyticsPage />
+                </ProtectedRoute>
+              } />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
         </AnimatePresence>
       </main>
 

@@ -54,7 +54,7 @@ export default function LandingPage() {
       <BackgroundBeams className="opacity-40" />
 
       {/* Hero Section */}
-      <section className="hero-section relative pt-20 md:pt-32 pb-12 md:pb-20 px-4">
+      <section className="hero-section relative pt-12 md:pt-24 pb-12 md:pb-20 px-4">
         <Spotlight
           className="-top-40 left-0 md:left-60 md:-top-20"
           fill="violet"

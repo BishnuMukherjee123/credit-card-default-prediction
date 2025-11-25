@@ -44,7 +44,7 @@ export const Footer = (): JSX.Element => {
   ];
 
   return (
-    <footer className="relative overflow-hidden" style={{ background: '#121212' }}>
+    <footer className="relative" style={{ background: '#121212' }}>
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute inset-0" style={{
@@ -54,12 +54,13 @@ export const Footer = (): JSX.Element => {
 
       <div className="relative z-10">
         {/* Main Footer Content */}
-        <div className="container mx-auto px-6 pt-16 pb-8">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+
+        <div className="container mx-auto px-4 sm:px-6 pt-2 sm:pt-16 pb-1 sm:pb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-0 sm:gap-8 mb-0 sm:mb-12">
             
             {/* Brand Column */}
-            <div className="col-span-2 md:col-span-1">
-              <Link to="/" className="flex items-center gap-2 mb-4">
+            <div className="col-span-1 sm:col-span-2 md:col-span-1 mb-2 sm:mb-0">
+              <Link to="/" className="flex items-center gap-2 mb-2 sm:mb-4">
                 <div className="p-2 rounded-lg" style={{
                   background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2))',
                   border: '1px solid rgba(139, 92, 246, 0.3)',
@@ -70,12 +71,12 @@ export const Footer = (): JSX.Element => {
                   CreditAI
                 </span>
               </Link>
-              <p className="text-sm mb-4" style={{ color: '#9ca3af', lineHeight: '1.6' }}>
+              <p className="text-sm mb-2 hidden sm:block" style={{ color: '#9ca3af', lineHeight: '1.6' }}>
                 AI-powered fraud detection system with 94% accuracy. Protecting transactions worldwide.
               </p>
               
-              {/* Contact Info */}
-              <div className="space-y-2">
+              {/* Contact Info - Hidden on mobile */}
+              <div className="space-y-2 hidden sm:block">
                 <div className="flex items-center gap-2 text-sm" style={{ color: '#6b7280' }}>
                   <Mail className="h-4 w-4" />
                   <span>support@creditai.com</span>
@@ -87,13 +88,13 @@ export const Footer = (): JSX.Element => {
               </div>
             </div>
 
-            {/* Footer Links Sections */}
+            {/* Footer Links Sections - HIDDEN ON MOBILE */}
             {footerSections.map((section) => (
-              <div key={section.title}>
-                <h3 className="text-sm font-bold mb-4" style={{ color: '#ffffff' }}>
+              <div key={section.title} className="hidden sm:block">
+                <h3 className="text-sm font-bold mb-2" style={{ color: '#ffffff' }}>
                   {section.title}
                 </h3>
-                <ul className="space-y-3">
+                <ul className="space-y-2">
                   {section.links.map((link) => (
                     <li key={link.label}>
                       <motion.a
@@ -112,23 +113,23 @@ export const Footer = (): JSX.Element => {
             ))}
           </div>
 
-          {/* Divider */}
-          <div className="h-px mb-8" style={{
+          {/* Divider - Hidden on mobile */}
+          <div className="h-px mb-2 sm:mb-8 hidden sm:block" style={{
             background: 'linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.2), transparent)'
           }} />
 
           {/* Bottom Bar */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-0 sm:gap-6">
             
             {/* Copyright */}
-            <div className="flex flex-col md:flex-row items-center gap-4 text-sm" style={{ color: '#6b7280' }}>
-              <span>© 2025 CreditAI. All rights reserved.</span>
+            <div className="flex flex-col md:flex-row items-center gap-2 sm:gap-4 text-xs sm:text-sm mb-2 sm:mb-0" style={{ color: '#6b7280' }}>
+              <span>© 2025 CreditAI (v2). All rights reserved.</span>
               <div className="hidden md:block w-1 h-1 rounded-full" style={{ background: '#6b7280' }} />
-              <span>Made with ❤️ by the CreditAI Team</span>
+              <span className="hidden sm:inline">Made with ❤️ by the CreditAI Team</span>
             </div>
 
             {/* Social Links */}
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               {[
                 { Icon: Github, href: 'https://github.com/BishnuMukherjee123', label: 'GitHub' },
                 { Icon: Linkedin, href: 'https://linkedin.com/in/bishnu-mukherjee-a235a621a', label: 'LinkedIn' },
@@ -142,20 +143,20 @@ export const Footer = (): JSX.Element => {
                   aria-label={label}
                   whileHover={{ y: -3, backgroundColor: 'rgba(139, 92, 246, 0.15)' }}
                   whileTap={{ scale: 0.95 }}
-                  className="p-2.5 rounded-lg transition-colors"
+                  className="p-2 sm:p-2.5 rounded-lg transition-colors"
                   style={{
                     background: 'rgba(255, 255, 255, 0.05)',
                     border: '1px solid rgba(255, 255, 255, 0.1)',
                   }}
                 >
-                  <Icon className="h-5 w-5" style={{ color: '#9ca3af' }} />
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#9ca3af' }} />
                 </motion.a>
               ))}
             </div>
           </div>
 
           {/* Extra Info Pills */}
-          <div className="flex flex-wrap justify-center gap-3 mt-8 pt-8" style={{
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mt-1 sm:mt-8 pt-1 sm:pt-8" style={{
             borderTop: '1px solid rgba(139, 92, 246, 0.1)'
           }}>
             {[
@@ -168,7 +169,7 @@ export const Footer = (): JSX.Element => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
+                className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-medium"
                 style={{
                   background: 'rgba(139, 92, 246, 0.08)',
                   border: '1px solid rgba(139, 92, 246, 0.2)',

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, matchPath } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { ThemeProvider } from './components/theme-provider';
 import { Toaster } from './components/ui/sonner';
@@ -8,7 +8,7 @@ import { AnimatePresence } from 'framer-motion';
 import { type ReactNode, lazy, Suspense } from 'react';
 import type { JSX } from "react";
 
-// ✅ LAZY LOAD ALL PAGES - Dramatically improves initial load time
+// ✅ LAZY LOAD ALL PAGES - Dramatically improves initial load t  ime
 // Each page is now in a separate chunk, loaded only when needed
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
@@ -82,15 +82,15 @@ const RootRedirect = () => {
 function AppRoutes(): JSX.Element {
   const location = useLocation();
   
-  // ✅ CHECK IF CURRENT PAGE IS LOGIN
-  const isLoginPage = location.pathname === '/login';
+  // ✅ CHECK IF CURRENT PAGE IS LOGIN (Robust check using matchPath)
+  const isLoginPage = !!matchPath("/login", location.pathname);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className={`min-h-screen ${isLoginPage ? 'bg-black' : 'bg-background'} text-foreground flex flex-col`}>
       {/* ✅ CONDITIONALLY RENDER NAVBAR */}
       {!isLoginPage && <Navbar />}
       
-      <main className="flex-1 w-full flex flex-col bg-[#0a0a0d]">
+      <main className={`flex-1 w-full flex flex-col ${isLoginPage ? 'bg-black pt-0' : 'bg-[#0a0a0d] pt-14'}`}>
         <AnimatePresence mode="wait">
           <Suspense fallback={<LoadingScreen />}>
             <Routes location={location} key={location.pathname}>
@@ -135,8 +135,9 @@ function AppRoutes(): JSX.Element {
 
       {/* ✅ CONDITIONALLY RENDER FOOTER */}
       {!isLoginPage && <Footer />}
+      {!isLoginPage && <Toaster />}
       
-      <Toaster />
+      
     </div>
   );
 }

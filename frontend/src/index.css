@@ -53,7 +53,7 @@ html {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', system-ui, sans-serif;
-  background: #0a0a0d; /* ✅ Match page background */
+  background: #121212 !important; /* ✅ Match footer background to prevent black bar */
   color: white;
   line-height: 1.6;
   overflow-x: hidden;
@@ -521,5 +521,22 @@ object {
     padding-top: 2rem;
     padding-bottom: 2rem;
   }
+  
+  /* Eliminate footer bottom spacing */
+  footer {
+    margin-bottom: 0 !important;
+    padding-bottom: 0.5rem !important;
+  }
 }
 
+
+/* ========================================
+   LOGIN PAGE OVERRIDES
+======================================== */
+/* Force hide layout elements on login page as a backup */
+body.login-page-active footer,
+body.login-page-active nav,
+body.login-page-active .navbar-container,
+body.login-page-active .footer-container {
+  display: none !important;
+}

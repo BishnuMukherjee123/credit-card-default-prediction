@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { SignInButton, SignUpButton } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import {
@@ -54,9 +54,21 @@ export default function LoginPage() {
     },
   ];
 
+  // ✅ Force body background to black and add identifier class
+  useEffect(() => {
+    const originalStyle = document.body.style.background;
+    document.body.style.background = "#000000";
+    document.body.classList.add('login-page-active');
+    
+    return () => {
+      document.body.style.background = originalStyle;
+      document.body.classList.remove('login-page-active');
+    };
+  }, []);
+
   return (
     <div
-      className="min-h-screen overflow-hidden relative"
+      className="min-h-screen w-full relative overflow-x-hidden"
       style={{
         background: "#000000",
       }}
@@ -136,16 +148,16 @@ export default function LoginPage() {
       </div>
 
       {/* CONTENT LAYER */}
-      <div className="h-full flex flex-col lg:flex-row relative z-10">
+      <div className="flex flex-col lg:flex-row relative z-10 min-h-screen">
         {/* LEFT SIDE - Branding (Hidden on Mobile, Visible on Desktop) */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="hidden lg:flex lg:w-1/2 relative"
+          className="hidden lg:flex lg:w-1/2 relative min-h-full"
         >
-          {/* Content - Scrollable */}
-          <div className="flex flex-col justify-center px-12 lg:px-20 w-full py-8 overflow-y-auto">
+          {/* Content Wrapper - Ensures centering + scrolling */}
+          <div className="min-h-full w-full flex flex-col justify-center px-12 lg:px-20 py-8">
             {/* Logo */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -226,215 +238,218 @@ export default function LoginPage() {
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto"
+          className="w-full lg:w-1/2 min-h-full"
         >
-          <div className="w-full max-w-md my-auto">
-            {/* Mobile Logo & Branding */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="lg:hidden text-center mb-6 sm:mb-8"
-            >
-              <div className="inline-flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-6">
-                <div
-                  className="p-2.5 sm:p-3 rounded-xl"
-                  style={{
-                    background: "linear-gradient(135deg, #8b5cf6, #3b82f6)",
-                    boxShadow: "0 12px 40px rgba(139, 92, 246, 0.4)",
-                  }}
-                >
-                  <CreditCard className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
-                </div>
-                <h1
-                  className="text-2xl sm:text-3xl font-black"
-                  style={{
-                    background: "linear-gradient(135deg, #ffffff, #a78bfa)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                >
-                  CreditAI
-                </h1>
-              </div>
-
-              {/* Mobile-only tagline */}
-              <motion.h2
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-xl sm:text-2xl font-bold text-white mb-2"
-              >
-                AI-Powered Credit Intelligence
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-sm sm:text-base text-slate-400 px-4"
-              >
-                Enterprise-grade risk analysis with sub-200ms predictions
-              </motion.p>
-            </motion.div>
-
-            {/* Auth Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 text-center"
-              style={{
-                background:
-                  "linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
-                border: "1px solid rgba(255,255,255,0.08)",
-                backdropFilter: "blur(40px)",
-                boxShadow: "0 32px 64px rgba(0,0,0,0.4)",
-              }}
-            >
-              {/* Icon */}
+          {/* Content Wrapper - Ensures centering + scrolling */}
+          <div className="min-h-full w-full flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+            <div className="w-full max-w-md">
+              {/* Mobile Logo & Branding */}
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.3, type: "spring" }}
-                className="flex justify-center mb-4 sm:mb-6"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="lg:hidden text-center mb-6 sm:mb-8"
               >
-                <div
-                  className="p-4 sm:p-5 rounded-xl sm:rounded-2xl"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.1))",
-                    border: "1px solid rgba(139, 92, 246, 0.3)",
-                  }}
-                >
-                  <Shield className="h-8 w-8 sm:h-10 sm:w-10 text-violet-400" />
-                </div>
-              </motion.div>
-
-              {/* Title */}
-              <motion.h2
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-3"
-              >
-                Welcome to CreditAI
-              </motion.h2>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                className="text-slate-400 text-sm sm:text-base lg:text-lg mb-6 sm:mb-8 px-2"
-              >
-                Sign in to access your AI-powered credit risk dashboard
-              </motion.p>
-
-              {/* Auth Buttons */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                className="space-y-2.5 sm:space-y-3"
-              >
-                {/* Sign In Button */}
-                <SignInButton mode="redirect" forceRedirectUrl="/dashboard">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="group w-full px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl font-bold text-white transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base"
+                <div className="inline-flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-6">
+                  <div
+                    className="p-2.5 sm:p-3 rounded-xl"
                     style={{
                       background: "linear-gradient(135deg, #8b5cf6, #3b82f6)",
-                      boxShadow: "0 20px 60px rgba(139, 92, 246, 0.4)",
+                      boxShadow: "0 12px 40px rgba(139, 92, 246, 0.4)",
                     }}
                   >
-                    <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
-                    Sign In
-                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
-                  </motion.button>
-                </SignInButton>
-
-                {/* Sign Up Button */}
-                <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base"
+                    <CreditCard className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+                  </div>
+                  <h1
+                    className="text-2xl sm:text-3xl font-black"
                     style={{
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      backdropFilter: "blur(10px)",
+                      background: "linear-gradient(135deg, #ffffff, #a78bfa)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
                     }}
                   >
-                    Create Account
-                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
-                  </motion.button>
-                </SignUpButton>
-              </motion.div>
-
-              {/* Divider */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.7 }}
-                className="flex items-center gap-3 sm:gap-4 my-5 sm:my-6"
-              >
-                <div
-                  className="flex-1 h-px"
-                  style={{ background: "rgba(255,255,255,0.1)" }}
-                />
-                <span className="text-[10px] sm:text-xs text-slate-500 whitespace-nowrap">
-                  Secure Authentication
-                </span>
-                <div
-                  className="flex-1 h-px"
-                  style={{ background: "rgba(255,255,255,0.1)" }}
-                />
-              </motion.div>
-
-              {/* Security Info */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-slate-500"
-              >
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <Shield className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                  <span className="text-center sm:text-left">256-bit SSL encryption</span>
+                    CreditAI
+                  </h1>
                 </div>
-                <span className="hidden sm:inline">•</span>
-                <span className="text-center sm:text-left">SOC 2 Type II compliant</span>
+
+                {/* Mobile-only tagline */}
+                <motion.h2
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="text-xl sm:text-2xl font-bold text-white mb-2"
+                >
+                  AI-Powered Credit Intelligence
+                </motion.h2>
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="text-sm sm:text-base text-slate-400 px-4"
+                >
+                  Enterprise-grade risk analysis with sub-200ms predictions
+                </motion.p>
               </motion.div>
-            </motion.div>
 
-            {/* Mobile-only Features Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.9 }}
-              className="lg:hidden mt-6 sm:mt-8 space-y-3 sm:space-y-4 px-2"
-            >
-              {features.map((feature, i) => (
-                <FeatureCard key={i} {...feature} delay={1 + i * 0.1} />
-              ))}
-
-              {/* Mobile Trust Badge */}
+              {/* Auth Card */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 1.3 }}
-                className="pt-2 sm:pt-4 text-center"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 text-center"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  backdropFilter: "blur(40px)",
+                  boxShadow: "0 32px 64px rgba(0,0,0,0.4)",
+                }}
               >
-                <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-slate-500">
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500"
+                {/* Icon */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3, type: "spring" }}
+                  className="flex justify-center mb-4 sm:mb-6"
+                >
+                  <div
+                    className="p-4 sm:p-5 rounded-xl sm:rounded-2xl"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.1))",
+                      border: "1px solid rgba(139, 92, 246, 0.3)",
+                    }}
+                  >
+                    <Shield className="h-8 w-8 sm:h-10 sm:w-10 text-violet-400" />
+                  </div>
+                </motion.div>
+
+                {/* Title */}
+                <motion.h2
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-3"
+                >
+                  Welcome to CreditAI
+                </motion.h2>
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  className="text-slate-400 text-sm sm:text-base lg:text-lg mb-6 sm:mb-8 px-2"
+                >
+                  Sign in to access your AI-powered credit risk dashboard
+                </motion.p>
+
+                {/* Auth Buttons */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                  className="space-y-2.5 sm:space-y-3"
+                >
+                  {/* Sign In Button */}
+                  <SignInButton mode="redirect" forceRedirectUrl="/dashboard">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="group w-full px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl font-bold text-white transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base"
+                      style={{
+                        background: "linear-gradient(135deg, #8b5cf6, #3b82f6)",
+                        boxShadow: "0 20px 60px rgba(139, 92, 246, 0.4)",
+                      }}
+                    >
+                      <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
+                      Sign In
+                      <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+                    </motion.button>
+                  </SignInButton>
+
+                  {/* Sign Up Button */}
+                  <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base"
+                      style={{
+                        background: "rgba(255,255,255,0.05)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        backdropFilter: "blur(10px)",
+                      }}
+                    >
+                      Create Account
+                      <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </motion.button>
+                  </SignUpButton>
+                </motion.div>
+
+                {/* Divider */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.7 }}
+                  className="flex items-center gap-3 sm:gap-4 my-5 sm:my-6"
+                >
+                  <div
+                    className="flex-1 h-px"
+                    style={{ background: "rgba(255,255,255,0.1)" }}
                   />
-                  <span>Trusted by 10,000+ financial institutions</span>
-                </div>
+                  <span className="text-[10px] sm:text-xs text-slate-500 whitespace-nowrap">
+                    Secure Authentication
+                  </span>
+                  <div
+                    className="flex-1 h-px"
+                    style={{ background: "rgba(255,255,255,0.1)" }}
+                  />
+                </motion.div>
+
+                {/* Security Info */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                  className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-slate-500"
+                >
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <Shield className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                    <span className="text-center sm:text-left">256-bit SSL encryption</span>
+                  </div>
+                  <span className="hidden sm:inline">•</span>
+                  <span className="text-center sm:text-left">SOC 2 Type II compliant</span>
+                </motion.div>
               </motion.div>
-            </motion.div>
+
+              {/* Mobile-only Features Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.9 }}
+                className="lg:hidden mt-6 sm:mt-8 space-y-3 sm:space-y-4 px-2"
+              >
+                {features.map((feature, i) => (
+                  <FeatureCard key={i} {...feature} delay={1 + i * 0.1} />
+                ))}
+
+                {/* Mobile Trust Badge */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 1.3 }}
+                  className="pt-2 sm:pt-4 text-center"
+                >
+                  <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-slate-500">
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500"
+                    />
+                    <span>Trusted by 10,000+ financial institutions</span>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </div>
           </div>
         </motion.div>
       </div>

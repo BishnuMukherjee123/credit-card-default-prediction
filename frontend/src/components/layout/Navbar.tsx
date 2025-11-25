@@ -15,7 +15,7 @@ const NavLink = memo(({ path, label, isActive, onClick }: { path: string; label:
       transition={{ duration: 0.15, ease: "easeOut" }}>
       <Button 
         variant="ghost"
-        className="relative px-4 py-2 font-semibold transition-all duration-200"
+        className="relative px-3 py-1.5 font-semibold transition-all duration-200"
         style={{
           color: isActive ? '#ffffff' : '#94a3b8',
           background: isActive 
@@ -172,11 +172,10 @@ export const Navbar = (): JSX.Element => {
           </div>
         )}
 
-        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-2 sm:py-2.5">
+          <div className="flex items-center justify-between w-full relative">
             
-            {/* Logo */}
-            <Link to={isSignedIn ? "/dashboard" : "/"} className="relative group z-50">
+            <Link to={isSignedIn ? "/dashboard" : "/"} className="relative group z-50 flex-shrink-0 flex items-center">
               <motion.div 
                 className="flex items-center gap-2 sm:gap-3"
                 whileHover={{ scale: 1.05 }}
@@ -199,7 +198,7 @@ export const Navbar = (): JSX.Element => {
                       background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2))',
                       border: '1px solid rgba(139, 92, 246, 0.3)'
                     }}>
-                    <CreditCard className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: '#a78bfa' }} />
+                    <CreditCard className="h-6 w-6 sm:h-7 sm:w-7" style={{ color: '#a78bfa' }} />
                   </div>
                 </div>
 
@@ -291,7 +290,7 @@ export const Navbar = (): JSX.Element => {
                       transition={{ duration: 0.15, ease: "easeOut" }}
                       style={{ willChange: 'transform' }}>
                       <Button 
-                        className="font-semibold relative overflow-hidden"
+                        className="font-semibold relative overflow-hidden h-9 px-4"
                         style={{
                           background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
                           color: '#ffffff',
@@ -325,15 +324,19 @@ export const Navbar = (): JSX.Element => {
               )}
             </div>
 
+            {/* Spacer to force hamburger to right */}
+            <div className="flex-1 md:hidden" />
+
             {/* Mobile Hamburger Button */}
             <motion.button
-              className="md:hidden p-2 rounded-lg relative z-50"
               onClick={toggleMenu}
               whileTap={{ scale: 0.95 }}
+              className="md:hidden relative z-50 p-2 flex-shrink justify-items-end"
               style={{
-                background: 'rgba(139, 92, 246, 0.1)',
-                border: '1px solid rgba(139, 92, 246, 0.3)',
-                color: '#a78bfa'
+                color: '#ffffff',
+                background: 'transparent !important',
+                border: 'none !important',
+                boxShadow: 'none !important'
               }}>
               <AnimatePresence mode="wait" initial={false}>
                 {isMenuOpen ? (
@@ -374,11 +377,12 @@ export const Navbar = (): JSX.Element => {
               duration: 0.4,
               ease: [0.22, 1, 0.36, 1]
             }}
-            className="fixed inset-0 z-40 md:hidden"
+            className="fixed inset-0 z-40 md:hidden overflow-y-auto"
             style={{
               background: 'linear-gradient(135deg, rgba(10, 10, 13, 0.98), rgba(15, 15, 18, 0.98))',
               backdropFilter: 'blur(40px)',
-              WebkitBackdropFilter: 'blur(40px)'
+              WebkitBackdropFilter: 'blur(40px)',
+              maxHeight: '100dvh' // Dynamic viewport height for mobile
             }}>
             
             {/* Animated background gradient */}
@@ -395,7 +399,7 @@ export const Navbar = (): JSX.Element => {
             </div>
 
             {/* Menu Content */}
-            <div className="relative h-full flex flex-col justify-center items-center px-8 py-24">
+            <div className="relative min-h-full flex flex-col justify-center items-center px-6 py-20">
               
               {/* Navigation Links - LARGE SIZE */}
               <motion.div 

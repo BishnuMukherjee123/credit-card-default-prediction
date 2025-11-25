@@ -239,10 +239,10 @@ export default function LoginPage() {
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full lg:w-1/2 min-h-full"
+          className="w-full lg:w-1/2 h-full lg:min-h-full"
         >
           {/* Content Wrapper - Ensures centering + scrolling */}
-          <div className="min-h-full w-full flex flex-col items-center justify-center p-0 sm:p-6 lg:p-8">
+          <div className="h-full lg:min-h-full w-full flex flex-col items-center justify-center p-0 sm:p-6 lg:p-8">
             <div className="w-full max-w-md">
 
 

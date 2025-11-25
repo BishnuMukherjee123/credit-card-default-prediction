@@ -134,10 +134,8 @@ function AppRoutes(): JSX.Element {
       </main>
 
       {/* ✅ CONDITIONALLY RENDER FOOTER */}
-      {!isLoginPage && <Footer />}
-      {!isLoginPage && <Toaster />}
-      
-      
+      <Footer />
+      <Toaster />
     </div>
   );
 }

@@ -54,7 +54,7 @@ export default function LandingPage() {
       <BackgroundBeams className="opacity-40" />
 
       {/* Hero Section */}
-      <section className="hero-section relative pt-32 pb-20 px-4">
+      <section className="hero-section relative pt-20 md:pt-32 pb-12 md:pb-20 px-4">
         <Spotlight
           className="-top-40 left-0 md:left-60 md:-top-20"
           fill="violet"
@@ -79,7 +79,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-              className="text-6xl md:text-7xl lg:text-8xl font-bold text-center mb-6 leading-[1.1]"
+              className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-center mb-6 leading-[1.1] px-4"
             >
               <span className="block text-white mb-2">
                 Predict Credit Card
@@ -90,27 +90,27 @@ export default function LandingPage() {
             </motion.h1>
 
             {/* Subtitle */}
-            <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-gray-300 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4">
               Leverage cutting-edge machine learning to assess credit default
               risk in real-time. Built with MERN stack and trained on 30,000+
               credit profiles.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex gap-4 justify-center flex-wrap">
+            <div className="flex gap-3 md:gap-4 justify-center flex-wrap px-4">
               <Link to="/login">
                 <Button
                   size="lg"
-                  className="btn-gradient px-8 py-6 text-base font-semibold"
+                  className="btn-gradient px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold"
                 >
                   Get Started
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
                 </Button>
               </Link>
               <Button
                 size="lg"
                 variant="outline"
-                className="glass-card px-8 py-6 text-base font-semibold text-white border-violet-500/50 hover:border-violet-500 hover:bg-violet-500/10"
+                className="glass-card px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold text-white border-violet-500/50 hover:border-violet-500 hover:bg-violet-500/10"
               >
                 View Demo
               </Button>
@@ -122,7 +122,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20"
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-12 md:mt-20"
           >
             {stats.map((stat, index) => (
               <motion.div

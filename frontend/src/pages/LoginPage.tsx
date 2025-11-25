@@ -242,66 +242,19 @@ export default function LoginPage() {
           className="w-full lg:w-1/2 min-h-full"
         >
           {/* Content Wrapper - Ensures centering + scrolling */}
-          <div className="min-h-full w-full flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+          <div className="min-h-full w-full flex flex-col items-center justify-center p-0 sm:p-6 lg:p-8">
             <div className="w-full max-w-md">
-              {/* Mobile Logo & Branding */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="lg:hidden text-center mb-6 sm:mb-8"
-              >
-                <div className="inline-flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-6">
-                  <div
-                    className="p-2.5 sm:p-3 rounded-xl"
-                    style={{
-                      background: "linear-gradient(135deg, #8b5cf6, #3b82f6)",
-                      boxShadow: "0 12px 40px rgba(139, 92, 246, 0.4)",
-                    }}
-                  >
-                    <CreditCard className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
-                  </div>
-                  <h1
-                    className="text-2xl sm:text-3xl font-black"
-                    style={{
-                      background: "linear-gradient(135deg, #ffffff, #a78bfa)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
-                  >
-                    CreditAI
-                  </h1>
-                </div>
 
-                {/* Mobile-only tagline */}
-                <motion.h2
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="text-xl sm:text-2xl font-bold text-white mb-2"
-                >
-                  AI-Powered Credit Intelligence
-                </motion.h2>
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="text-sm sm:text-base text-slate-400 px-4"
-                >
-                  Enterprise-grade risk analysis with sub-200ms predictions
-                </motion.p>
-              </motion.div>
 
               {/* Auth Card */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 text-center"
+                className="rounded-none sm:rounded-3xl p-6 sm:p-8 lg:p-12 text-center min-h-[100dvh] sm:min-h-fit flex flex-col justify-center border-y sm:border border-white/10"
                 style={{
                   background:
                     "linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
-                  border: "1px solid rgba(255,255,255,0.08)",
                   backdropFilter: "blur(40px)",
                   boxShadow: "0 32px 64px rgba(0,0,0,0.4)",
                 }}
@@ -422,34 +375,7 @@ export default function LoginPage() {
                 </motion.div>
               </motion.div>
 
-              {/* Mobile-only Features Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.9 }}
-                className="lg:hidden mt-6 sm:mt-8 space-y-3 sm:space-y-4 px-2"
-              >
-                {features.map((feature, i) => (
-                  <FeatureCard key={i} {...feature} delay={1 + i * 0.1} />
-                ))}
 
-                {/* Mobile Trust Badge */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 1.3 }}
-                  className="pt-2 sm:pt-4 text-center"
-                >
-                  <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-slate-500">
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                      className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500"
-                    />
-                    <span>Trusted by 10,000+ financial institutions</span>
-                  </div>
-                </motion.div>
-              </motion.div>
             </div>
           </div>
         </motion.div>

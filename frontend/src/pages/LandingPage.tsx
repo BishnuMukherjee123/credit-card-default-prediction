@@ -24,25 +24,25 @@ export default function LandingPage() {
 
   const features = [
     {
-      icon: <Brain className="h-8 w-8" />,
+      icon: <Brain className="h-6 w-6 md:h-8 md:w-8" />,
       title: "ML-Powered Predictions",
       description:
         "Advanced ensemble models with 94% accuracy for reliable risk assessment",
     },
     {
-      icon: <Zap className="h-8 w-8" />,
+      icon: <Zap className="h-6 w-6 md:h-8 md:w-8" />,
       title: "Real-Time Analysis",
       description:
         "Sub-200ms prediction latency for instant credit risk evaluation",
     },
     {
-      icon: <Shield className="h-8 w-8" />,
+      icon: <Shield className="h-6 w-6 md:h-8 md:w-8" />,
       title: "Secure & Compliant",
       description:
         "Enterprise-grade security with JWT authentication and data encryption",
     },
     {
-      icon: <TrendingUp className="h-8 w-8" />,
+      icon: <TrendingUp className="h-6 w-6 md:h-8 md:w-8" />,
       title: "Actionable Insights",
       description:
         "Clear risk levels with detailed recommendations for decision making",
@@ -59,6 +59,9 @@ export default function LandingPage() {
           className="-top-40 left-0 md:left-60 md:-top-20"
           fill="violet"
         />
+
+        {/* Mobile Gradient Orb */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-violet-500/20 rounded-full blur-[80px] -z-10 md:hidden pointer-events-none" />
 
         <div className="container mx-auto text-center relative z-10">
           <motion.div
@@ -79,7 +82,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-              className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-center mb-6 leading-[1.1] px-4"
+              className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-center mb-6 leading-[1.1] px-4"
             >
               <span className="block text-white mb-2">
                 Predict Credit Card
@@ -97,11 +100,11 @@ export default function LandingPage() {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex gap-3 md:gap-4 justify-center flex-wrap px-4">
-              <Link to="/login">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center px-4 w-full sm:w-auto">
+              <Link to="/login" className="w-full sm:w-auto">
                 <Button
                   size="lg"
-                  className="btn-gradient px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold"
+                  className="btn-gradient w-full sm:w-auto px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold"
                 >
                   Get Started
                   <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
@@ -110,7 +113,7 @@ export default function LandingPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="glass-card px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold text-white border-violet-500/50 hover:border-violet-500 hover:bg-violet-500/10"
+                className="glass-card w-full sm:w-auto px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold text-white border-violet-500/50 hover:border-violet-500 hover:bg-violet-500/10"
               >
                 View Demo
               </Button>
@@ -131,12 +134,12 @@ export default function LandingPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5 + index * 0.1 }}
               >
-                <Card className="stat-card bg-white/5 border-violet-500/30 hover:border-violet-500/60">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-5xl font-bold mb-2 bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
+                <Card className="stat-card bg-white/5 backdrop-blur-md border-violet-500/30 hover:border-violet-500/60 transition-all duration-300">
+                  <CardContent className="p-3 md:p-6 text-center">
+                    <div className="text-3xl md:text-5xl font-bold mb-1 md:mb-2 bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
                       {stat.value}
                     </div>
-                    <div className="text-sm text-gray-400 font-medium">
+                    <div className="text-xs md:text-sm text-gray-400 font-medium">
                       {stat.label}
                     </div>
                   </CardContent>
@@ -148,11 +151,11 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 relative z-10">
+      <section className="py-12 md:py-20 px-4 relative z-10">
         <div className="container mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-violet-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-violet-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
               Why Choose CreditAI?
             </h2>
             <p className="text-gray-300 text-lg">
@@ -161,7 +164,7 @@ export default function LandingPage() {
           </div>
 
           {/* Feature Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -170,15 +173,15 @@ export default function LandingPage() {
                 transition={{ delay: index * 0.1, duration: 0.5 }}
                 viewport={{ once: true }}
               >
-                <Card className="h-full feature-card border-violet-500/30 hover:border-violet-500/60">
-                  <CardContent className="p-6">
-                    <div className="mb-4 text-violet-400 feature-icon p-3 rounded-lg bg-violet-500/10 w-fit">
+                <Card className="h-full feature-card border-violet-500/30 hover:border-violet-500/60 active:scale-95 transition-all duration-200">
+                  <CardContent className="p-3 md:p-6">
+                    <div className="mb-2 md:mb-4 text-violet-400 feature-icon p-1.5 md:p-3 rounded-lg bg-violet-500/10 w-fit">
                       {feature.icon}
                     </div>
-                    <h3 className="text-xl font-semibold mb-3 text-white">
+                    <h3 className="text-xs md:text-xl font-semibold mb-1 md:mb-3 text-white">
                       {feature.title}
                     </h3>
-                    <p className="text-gray-400 text-sm leading-relaxed">
+                    <p className="text-gray-400 text-[10px] md:text-sm leading-relaxed">
                       {feature.description}
                     </p>
                   </CardContent>
@@ -190,10 +193,10 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 relative z-10 mb-20">
+      <section className="py-12 md:py-20 px-4 relative z-10 mb-20">
         <div className="container mx-auto max-w-4xl">
           <Card className="glass-card border-violet-500/50 overflow-hidden">
-            <CardContent className="p-12 text-center relative">
+            <CardContent className="p-6 md:p-12 text-center relative">
               {/* Background Gradient */}
               <div className="absolute inset-0 bg-gradient-to-br from-violet-600/10 via-purple-600/10 to-blue-600/10 -z-10"></div>
 

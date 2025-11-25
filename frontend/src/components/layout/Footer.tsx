@@ -58,8 +58,8 @@ export const Footer = (): JSX.Element => {
         <div className="container mx-auto px-4 sm:px-6 pt-2 sm:pt-16 pb-1 sm:pb-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-0 sm:gap-8 mb-0 sm:mb-12">
             
-            {/* Brand Column */}
-            <div className="col-span-1 sm:col-span-2 md:col-span-1 mb-2 sm:mb-0">
+            {/* Brand Column - Hidden on Mobile */}
+            <div className="hidden sm:block col-span-1 sm:col-span-2 md:col-span-1 mb-2 sm:mb-0">
               <Link to="/" className="flex items-center gap-2 mb-2 sm:mb-4">
                 <div className="p-2 rounded-lg" style={{
                   background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2))',
@@ -88,9 +88,9 @@ export const Footer = (): JSX.Element => {
               </div>
             </div>
 
-            {/* Footer Links Sections - HIDDEN ON MOBILE */}
+            {/* Footer Links Sections - Visible on Mobile */}
             {footerSections.map((section) => (
-              <div key={section.title} className="hidden sm:block">
+              <div key={section.title}>
                 <h3 className="text-sm font-bold mb-2" style={{ color: '#ffffff' }}>
                   {section.title}
                 </h3>

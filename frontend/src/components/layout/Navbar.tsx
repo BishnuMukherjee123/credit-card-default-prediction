@@ -175,7 +175,11 @@ export const Navbar = (): JSX.Element => {
         <div className="container mx-auto px-4 sm:px-6 py-2 sm:py-2.5">
           <div className="flex items-center justify-between w-full relative">
             
-            <Link to={isSignedIn ? "/dashboard" : "/"} className="relative group z-50 flex-shrink-0 flex items-center">
+            <a 
+              href={isSignedIn ? "/dashboard" : "/"} 
+              className="relative group z-50 flex-shrink-0 flex items-center"
+              onClick={() => setIsMenuOpen(false)}
+            >
               <motion.div 
                 className="flex items-center gap-2 sm:gap-3"
                 whileHover={{ scale: 1.05 }}
@@ -225,7 +229,7 @@ export const Navbar = (): JSX.Element => {
                   AI
                 </motion.span>
               </motion.div>
-            </Link>
+            </a>
 
             {/* Desktop Navigation - NORMAL SIZE */}
             <div className="hidden md:flex items-center gap-2">

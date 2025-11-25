@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react";
+import { memo, useLayoutEffect } from "react";
 import { SignInButton, SignUpButton } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import {
@@ -55,7 +55,8 @@ export default function LoginPage() {
   ];
 
   // ✅ Force body background to black and add identifier class
-  useEffect(() => {
+  // useLayoutEffect ensures this runs synchronously before paint, preventing flicker
+  useLayoutEffect(() => {
     const originalStyle = document.body.style.background;
     document.body.style.background = "#000000";
     document.body.classList.add('login-page-active');
